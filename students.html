@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>मेरे विद्यार्थी | गणित सेतु</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="simple-header"><a href="home.html">← होम</a><div class="mini-brand">👨‍🎓 मेरे विद्यार्थी</div></header>
+<main class="page">
+<section class="panel">
+ <div class="section-head"><div><h1>विद्यालय के विद्यार्थी</h1><p class="muted">अपने विद्यालय के पंजीकृत विद्यार्थियों की सूची</p></div>
+ <input class="search" id="studentSearch" placeholder="नाम से खोजें..." oninput="filterStudents()"></div>
+ <div class="table-wrap">
+  <div class="table-head student-table"><span>आईडी</span><span>नाम</span><span>कक्षा</span><span>स्थिति</span></div>
+  <div id="studentList"></div>
+ </div>
+</section>
+</main>
+<script src="assets/js/students.js"></script>
+</body></html>

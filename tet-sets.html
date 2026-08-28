@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>टेस्ट सेट | गणित सेतु</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand" id="pageTitle">शिक्षक पात्रता परीक्षा</div></header>
+<main class="page">
+<section class="panel">
+ <h1 id="examTitle">अभ्यास टेस्ट</h1>
+ <p class="muted">अपना Set चुनें। प्रत्येक Set में 50 प्रश्न और कुल समय 50 मिनट रहेगा।</p>
+ <div class="set-grid">
+   <a id="setA" class="set-card"><span>🅰️</span><h2>Set A</h2><p>5 भाग • प्रत्येक भाग में 10 प्रश्न</p><b>टेस्ट शुरू करें →</b></a>
+   <a id="setB" class="set-card"><span>🅱️</span><h2>Set B</h2><p>5 भाग • प्रत्येक भाग में 10 प्रश्न</p><b>टेस्ट शुरू करें →</b></a>
+   <a id="setC" class="set-card"><span>🅲</span><h2>Set C</h2><p>5 भाग • प्रत्येक भाग में 10 प्रश्न</p><b>टेस्ट शुरू करें →</b></a>
+ </div>
+ <div class="result-entry">
+   <div><span>📊</span><div><h2>मेरा परिणाम</h2><p>अपने सभी दिए गए टेस्ट का तारीखवार परिणाम देखें</p></div></div>
+   <a class="outline-inline" href="teacher-results.html">परिणाम देखें →</a>
+ </div>
+</section>
+</main>
+<script>
+const p=new URLSearchParams(location.search); const type=p.get('type')==='secondary'?'secondary':'primary';
+const hindi=type==='secondary'?'माध्यमिक शिक्षक पात्रता परीक्षा':'प्राथमिक शिक्षक पात्रता परीक्षा';
+document.getElementById('pageTitle').textContent=hindi; document.getElementById('examTitle').textContent=hindi;
+['A','B','C'].forEach(set=>document.getElementById('set'+set).href=`tet-test.html?type=${type}&set=${set}`);
+</script>
+</body></html>
