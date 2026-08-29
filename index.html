@@ -12,18 +12,26 @@
     <div class="logo-mark">GS</div>
     <div><h1>गणित सेतु</h1><p>शिक्षक पैनल</p></div>
   </div>
+
   <section class="form-box">
     <h2>शिक्षक लॉगिन</h2>
-    <p class="muted">अपनी शिक्षक आईडी और पासवर्ड दर्ज करें</p>
+    <p class="muted">अपनी शिक्षक आईडी और मोबाइल नंबर दर्ज करें</p>
+
     <label>शिक्षक आईडी</label>
-    <input id="teacherId" placeholder="उदाहरण: GT-00001">
-    <label>पासवर्ड</label>
-    <input id="password" type="password" placeholder="पासवर्ड दर्ज करें">
-    <button class="primary-btn" onclick="teacherLogin()">लॉगिन करें</button>
-    <p class="demo-note">यह अभी Demo Version है। कोई भी ID और Password डालकर Login कर सकते हैं।</p>
+    <input id="teacherId" placeholder="उदाहरण: GS-T-00001">
+
+    <label>मोबाइल नंबर</label>
+    <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर">
+
+    <button class="primary-btn" id="loginBtn" type="button">लॉगिन करें</button>
+
+    <p id="loginStatus" class="muted" style="margin-top:12px;"></p>
     <p class="auth-switch">नया शिक्षक हैं? <a href="register.html">पंजीकरण करें</a></p>
   </section>
 </main>
-<script src="assets/js/app.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/teacher-auth.js"></script>
 </body>
 </html>
