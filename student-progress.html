@@ -1,25 +1,263 @@
 <!doctype html>
 <html lang="hi">
+
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>विद्यार्थी प्रगति | गणित सेतु</title>
-<link rel="stylesheet" href="assets/css/style.css">
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <title>विद्यार्थी प्रगति | गणित सेतु</title>
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+
+    .student-profile-head{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:22px;
+    }
+
+    .student-photo{
+      width:70px;
+      height:70px;
+      border-radius:50%;
+      overflow:hidden;
+      background:var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      font-weight:800;
+      color:var(--blue);
+      flex-shrink:0;
+    }
+
+    .student-photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .progress-cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin:20px 0 28px;
+    }
+
+    .progress-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      text-align:center;
+      background:#fff;
+    }
+
+    .progress-card span{
+      display:block;
+      color:#687489;
+      font-size:14px;
+      margin-bottom:8px;
+    }
+
+    .progress-card b{
+      font-size:24px;
+      color:var(--blue);
+    }
+
+    .result-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .mini-result{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:14px;
+      align-items:center;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      background:#fff;
+    }
+
+    .result-info b{
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .result-info small{
+      color:#687489;
+    }
+
+    .result-score{
+      font-weight:800;
+      color:var(--blue);
+      white-space:nowrap;
+    }
+
+    .result-date{
+      color:#687489;
+      font-size:13px;
+      text-align:right;
+      white-space:nowrap;
+    }
+
+    .loading-box,
+    .empty-box,
+    .error-box{
+      padding:25px;
+      text-align:center;
+      color:#687489;
+    }
+
+    @media(max-width:600px){
+
+      .student-profile-head{
+        align-items:flex-start;
+      }
+
+      .progress-cards{
+        grid-template-columns:1fr;
+      }
+
+      .mini-result{
+        grid-template-columns:1fr auto;
+      }
+
+      .result-date{
+        grid-column:1 / -1;
+        text-align:left;
+      }
+
+    }
+
+  </style>
+
 </head>
+
+
 <body>
-<header class="simple-header"><a href="students.html">← विद्यार्थी सूची</a><div class="mini-brand">📈 विद्यार्थी प्रगति</div></header>
+
+
+<header class="simple-header">
+
+  <a href="students.html">← विद्यार्थी सूची</a>
+
+  <div class="mini-brand">
+    📈 विद्यार्थी प्रगति
+  </div>
+
+</header>
+
+
+
 <main class="page narrow">
-<section class="panel">
- <h1>राहुल साहू</h1>
- <p class="muted">विद्यार्थी आईडी: GS-00012 • कक्षा 10</p>
- <div class="progress-cards">
-  <div><span>कुल टेस्ट</span><b>24</b></div>
-  <div><span>औसत स्कोर</span><b>78%</b></div>
-  <div><span>सर्वश्रेष्ठ स्कोर</span><b>95%</b></div>
- </div>
- <h2>हाल के परिणाम</h2>
- <div class="mini-result"><span>अध्याय टेस्ट</span><b>18/20</b><small>28 अगस्त</small></div>
- <div class="mini-result"><span>आज का सवाल</span><b>सही</b><small>27 अगस्त</small></div>
- <div class="mini-result"><span>अध्याय टेस्ट</span><b>16/20</b><small>26 अगस्त</small></div>
-</section>
+
+  <section class="panel">
+
+
+    <!-- विद्यार्थी जानकारी -->
+
+    <div class="student-profile-head">
+
+      <div class="student-photo" id="studentPhoto">
+        GS
+      </div>
+
+
+      <div>
+
+        <h1 id="studentName">
+          विद्यार्थी लोड हो रहा है...
+        </h1>
+
+
+        <p class="muted" id="studentInfo">
+          कृपया प्रतीक्षा करें...
+        </p>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Progress Cards -->
+
+    <div class="progress-cards">
+
+      <div class="progress-card">
+
+        <span>कुल टेस्ट</span>
+
+        <b id="totalTests">0</b>
+
+      </div>
+
+
+      <div class="progress-card">
+
+        <span>औसत प्रतिशत</span>
+
+        <b id="averagePercentage">0%</b>
+
+      </div>
+
+
+      <div class="progress-card">
+
+        <span>सर्वश्रेष्ठ प्रतिशत</span>
+
+        <b id="bestPercentage">0%</b>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Results -->
+
+    <h2>📋 टेस्ट परिणाम</h2>
+
+    <p class="muted">
+      विद्यार्थी द्वारा दिए गए सभी टेस्ट
+    </p>
+
+
+    <div
+      class="result-list"
+      id="resultList"
+    >
+
+      <div class="loading-box">
+        ⏳ परिणाम लोड हो रहे हैं...
+      </div>
+
+    </div>
+
+
+  </section>
+
 </main>
-</body></html>
+
+
+
+<!-- Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase.js"></script>
+
+<script src="assets/js/student-progress.js"></script>
+
+
+</body>
+
+</html>
