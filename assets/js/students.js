@@ -1,9 +1,9 @@
 let allStudents = [];
 
 
-/* ================================
+/* =========================================
    HTML SAFE
-================================ */
+========================================= */
 
 function escapeHtml(value) {
 
@@ -17,9 +17,9 @@ function escapeHtml(value) {
 }
 
 
-/* ================================
+/* =========================================
    STUDENT ROW
-================================ */
+========================================= */
 
 function createStudentRow(s) {
 
@@ -36,9 +36,7 @@ function createStudentRow(s) {
   return `
 
     <a
-      href="student-progress.html?student_id=${encodeURIComponent(
-        s.student_id || ''
-      )}"
+      href="student-progress.html?student_id=${encodeURIComponent(s.student_id || '')}"
       class="student-row"
     >
 
@@ -48,13 +46,9 @@ function createStudentRow(s) {
 
 
       <span>
-
         <b>
-          ${escapeHtml(
-            s.full_name || 'विद्यार्थी'
-          )}
+          ${escapeHtml(s.full_name || 'विद्यार्थी')}
         </b>
-
       </span>
 
 
@@ -74,16 +68,13 @@ function createStudentRow(s) {
 }
 
 
-/* ================================
-   RENDER CLASS LIST
-================================ */
+/* =========================================
+   RENDER CLASS STUDENTS
+========================================= */
 
-function renderClassStudents(
-  list,
-  classNumber
-) {
+function renderClassStudents(list, classNumber) {
 
-  const box =
+  const listBox =
     document.getElementById(
       classNumber === 9
         ? 'class9List'
@@ -99,18 +90,24 @@ function renderClassStudents(
     );
 
 
-  // Total Count
-
-  countBox.textContent =
-    'कुल विद्यार्थी: ' +
-    list.length;
+  if (!listBox) return;
 
 
-  // Empty Message
+  // Count दिखाएं
+
+  if (countBox) {
+
+    countBox.textContent =
+      list.length;
+
+  }
+
+
+  // कोई विद्यार्थी नहीं
 
   if (!list.length) {
 
-    box.innerHTML = `
+    listBox.innerHTML = `
 
       <div class="student-row">
 
@@ -122,9 +119,7 @@ function renderClassStudents(
           </b>
         </span>
 
-        <span>
-          कक्षा ${classNumber}
-        </span>
+        <span>—</span>
 
         <span>—</span>
 
@@ -137,7 +132,7 @@ function renderClassStudents(
   }
 
 
-  box.innerHTML =
+  listBox.innerHTML =
     list
       .map(createStudentRow)
       .join('');
@@ -145,9 +140,9 @@ function renderClassStudents(
 }
 
 
-/* ================================
+/* =========================================
    RENDER ALL
-================================ */
+========================================= */
 
 function renderStudents(list) {
 
@@ -177,33 +172,22 @@ function renderStudents(list) {
 }
 
 
-/* ================================
-   SEARCH STUDENTS
-================================ */
+/* =========================================
+   SEARCH
+========================================= */
 
 function filterStudents() {
 
-  const searchInput =
+  const searchBox =
     document.getElementById(
       'studentSearch'
     );
 
 
   const q =
-    (searchInput?.value || '')
+    (searchBox?.value || '')
       .trim()
       .toLowerCase();
-
-
-  if (!q) {
-
-    renderStudents(
-      allStudents
-    );
-
-    return;
-
-  }
 
 
   const filtered =
@@ -223,52 +207,19 @@ function filterStudents() {
         .toLowerCase()
         .includes(q)
 
-      ||
-
-      String(
-        s.school_name || ''
-      )
-        .toLowerCase()
-        .includes(q)
-
     );
 
 
-  renderStudents(
-    filtered
-  );
+  renderStudents(filtered);
 
 }
 
 
-/* ================================
+/* =========================================
    LOAD STUDENTS
-   ONLY TEACHER'S SCHOOL
-================================ */
+========================================= */
 
 async function loadStudents() {
-
-  const class9Box =
-    document.getElementById(
-      'class9List'
-    );
-
-
-  const class10Box =
-    document.getElementById(
-      'class10List'
-    );
-
-
-  class9Box.innerHTML =
-    '<div class="student-row"><span>⏳ लोड हो रहा है...</span></div>';
-
-
-  class10Box.innerHTML =
-    '<div class="student-row"><span>⏳ लोड हो रहा है...</span></div>';
-
-
-  // Teacher DISE Code
 
   const teacherDiseCode =
     sessionStorage.getItem(
@@ -278,39 +229,37 @@ async function loadStudents() {
 
   if (!teacherDiseCode) {
 
-    const message = `
+    console.error(
+      'Teacher DISE Code session में नहीं मिला'
+    );
+
+
+    document.getElementById(
+      'class9List'
+    ).innerHTML = `
 
       <div class="student-row">
-
         <span>⚠️</span>
-
-        <span>
-          <b>
-            Teacher का DISE Code नहीं मिला।
-          </b>
-        </span>
-
+        <span><b>Teacher का DISE Code नहीं मिला।</b></span>
         <span>—</span>
-
         <span>—</span>
-
       </div>
 
     `;
 
 
-    class9Box.innerHTML =
-      message;
+    document.getElementById(
+      'class10List'
+    ).innerHTML = `
 
+      <div class="student-row">
+        <span>⚠️</span>
+        <span><b>Teacher का DISE Code नहीं मिला।</b></span>
+        <span>—</span>
+        <span>—</span>
+      </div>
 
-    class10Box.innerHTML =
-      message;
-
-
-    console.error(
-      'Teacher DISE Code missing'
-    );
-
+    `;
 
     return;
 
@@ -376,6 +325,18 @@ async function loadStudents() {
       data || [];
 
 
+    console.log(
+      'Teacher DISE Code:',
+      teacherDiseCode
+    );
+
+
+    console.log(
+      'Students:',
+      allStudents
+    );
+
+
     renderStudents(
       allStudents
     );
@@ -389,7 +350,7 @@ async function loadStudents() {
     );
 
 
-    const errorMessage = `
+    const errorHtml = `
 
       <div class="student-row">
 
@@ -410,21 +371,41 @@ async function loadStudents() {
     `;
 
 
-    class9Box.innerHTML =
-      errorMessage;
+    const class9List =
+      document.getElementById(
+        'class9List'
+      );
 
 
-    class10Box.innerHTML =
-      errorMessage;
+    const class10List =
+      document.getElementById(
+        'class10List'
+      );
+
+
+    if (class9List) {
+
+      class9List.innerHTML =
+        errorHtml;
+
+    }
+
+
+    if (class10List) {
+
+      class10List.innerHTML =
+        errorHtml;
+
+    }
 
   }
 
 }
 
 
-/* ================================
+/* =========================================
    PAGE LOAD
-================================ */
+========================================= */
 
 document.addEventListener(
   'DOMContentLoaded',
