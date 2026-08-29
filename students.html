@@ -4,184 +4,156 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
   <title>मेरे विद्यार्थी | गणित सेतु</title>
 
   <link rel="stylesheet" href="assets/css/style.css">
-
-  <style>
-
-    .class-section {
-      margin-top: 24px;
-    }
-
-    .class-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 12px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: var(--soft);
-      border: 1px solid var(--line);
-    }
-
-    .class-title h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .student-count {
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-  </style>
 
 </head>
 
 
 <body>
 
-  <header class="simple-header">
+<header class="simple-header">
 
-    <a href="home.html">← होम</a>
+  <a href="home.html">← होम</a>
 
-    <div class="mini-brand">
-      👨‍🎓 मेरे विद्यार्थी
+  <div class="mini-brand">
+    👨‍🎓 मेरे विद्यार्थी
+  </div>
+
+</header>
+
+
+<main class="page">
+
+  <section class="panel">
+
+    <div class="section-head">
+
+      <div>
+
+        <h1>विद्यालय के विद्यार्थी</h1>
+
+        <p class="muted">
+          अपने विद्यालय के पंजीकृत विद्यार्थियों की सूची
+        </p>
+
+      </div>
+
+
+      <input
+        class="search"
+        id="studentSearch"
+        placeholder="नाम या विद्यार्थी आईडी से खोजें..."
+        oninput="filterStudents()"
+      >
+
     </div>
 
-  </header>
 
+    <!-- =========================
+         CLASS 9
+    ========================== -->
 
-  <main class="page">
-
-    <section class="panel">
+    <div class="class-section">
 
       <div class="section-head">
 
         <div>
 
-          <h1>विद्यालय के विद्यार्थी</h1>
+          <h2>📘 कक्षा 9वीं</h2>
 
           <p class="muted">
-            अपने विद्यालय के पंजीकृत विद्यार्थियों की सूची
+            कुल विद्यार्थी:
+            <b id="class9Count">0</b>
           </p>
 
         </div>
 
+      </div>
 
-        <input
-          class="search"
-          id="studentSearch"
-          placeholder="नाम या विद्यार्थी आईडी से खोजें..."
-          oninput="filterStudents()"
-        >
+
+      <div class="table-wrap">
+
+        <div class="table-head student-table">
+
+          <span>आईडी</span>
+
+          <span>नाम</span>
+
+          <span>कक्षा</span>
+
+          <span>स्थिति</span>
+
+        </div>
+
+
+        <div id="class9List"></div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         CLASS 10
+    ========================== -->
+
+    <div class="class-section">
+
+      <div class="section-head">
+
+        <div>
+
+          <h2>📕 कक्षा 10वीं</h2>
+
+          <p class="muted">
+            कुल विद्यार्थी:
+            <b id="class10Count">0</b>
+          </p>
+
+        </div>
 
       </div>
 
 
+      <div class="table-wrap">
 
-      <!-- =========================
-           CLASS 9
-      ========================== -->
+        <div class="table-head student-table">
 
-      <section class="class-section">
+          <span>आईडी</span>
 
-        <div class="class-title">
+          <span>नाम</span>
 
-          <h2>📘 कक्षा 9वीं</h2>
+          <span>कक्षा</span>
 
-          <span
-            class="student-count"
-            id="class9Count"
-          >
-            कुल विद्यार्थी: 0
-          </span>
+          <span>स्थिति</span>
 
         </div>
 
 
-        <div class="table-wrap">
+        <div id="class10List"></div>
 
-          <div class="table-head student-table">
+      </div>
 
-            <span>आईडी</span>
-
-            <span>नाम</span>
-
-            <span>कक्षा</span>
-
-            <span>स्थिति</span>
-
-          </div>
+    </div>
 
 
-          <div id="class9List"></div>
+  </section>
 
-        </div>
-
-      </section>
+</main>
 
 
+<!-- Supabase -->
 
-      <!-- =========================
-           CLASS 10
-      ========================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-      <section class="class-section">
+<script src="assets/js/supabase.js"></script>
 
-        <div class="class-title">
-
-          <h2>📕 कक्षा 10वीं</h2>
-
-          <span
-            class="student-count"
-            id="class10Count"
-          >
-            कुल विद्यार्थी: 0
-          </span>
-
-        </div>
-
-
-        <div class="table-wrap">
-
-          <div class="table-head student-table">
-
-            <span>आईडी</span>
-
-            <span>नाम</span>
-
-            <span>कक्षा</span>
-
-            <span>स्थिति</span>
-
-          </div>
-
-
-          <div id="class10List"></div>
-
-        </div>
-
-      </section>
-
-
-    </section>
-
-  </main>
-
-
-
-  <!-- Supabase -->
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="assets/js/supabase.js"></script>
-
-  <script src="assets/js/students.js"></script>
+<script src="assets/js/students.js"></script>
 
 </body>
 
