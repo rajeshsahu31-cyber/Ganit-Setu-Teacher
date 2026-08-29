@@ -1,47 +1,339 @@
 <!doctype html>
 <html lang="hi">
+
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>गणित सेतु | शिक्षक पैनल</title>
+
 <link rel="stylesheet" href="assets/css/style.css">
+
 </head>
+
+
 <body>
+
 <header class="topbar">
-  <div class="brand-inline"><span class="logo-small">GS</span><b>गणित सेतु</b><span class="tag">शिक्षक पैनल</span></div>
-  <div class="teacher-mini">नमस्ते, <b>राजेश सर</b> 👋</div>
+
+  <div class="brand-inline">
+    <span class="logo-small">GS</span>
+    <b>गणित सेतु</b>
+    <span class="tag">शिक्षक पैनल</span>
+  </div>
+
+  <div class="teacher-mini">
+    नमस्ते, <b id="teacherName">शिक्षक</b> 👋
+  </div>
+
 </header>
 
+
+
 <main class="page">
+
+
+<!-- Welcome -->
+
 <section class="welcome-card">
- <div>
-  <p class="eyebrow">TEACHER PANEL</p>
-  <h1>नमस्ते, राजेश सर! 👋</h1>
-  <p>अपने विद्यालय के विद्यार्थियों की परीक्षा प्रगति और परिणाम देखें।</p>
- </div>
- <div class="brand-badge">GS<br><small>गणित सेतु</small></div>
+
+  <div>
+
+    <p class="eyebrow">
+      TEACHER PANEL
+    </p>
+
+    <h1 id="welcomeTitle">
+      नमस्ते! 👋
+    </h1>
+
+    <p>
+      अपने विद्यालय के विद्यार्थियों की परीक्षा प्रगति और परिणाम देखें।
+    </p>
+
+  </div>
+
+
+  <div class="brand-badge">
+    GS
+    <br>
+    <small>गणित सेतु</small>
+  </div>
+
 </section>
+
+
+
+<!-- School Live Summary -->
 
 <section class="school-card">
- <div><span>विद्यालय</span><b>शासकीय उच्चतर माध्यमिक विद्यालय</b></div>
- <div><span>कुल विद्यार्थी</span><b>128</b></div>
- <div><span>आज टेस्ट देने वाले</span><b>76</b></div>
+
+  <div>
+
+    <span>विद्यालय</span>
+
+    <b id="schoolName">
+      लोड हो रहा है...
+    </b>
+
+  </div>
+
+
+  <div>
+
+    <span>कुल विद्यार्थी</span>
+
+    <b id="totalStudents">
+      0
+    </b>
+
+  </div>
+
+
+  <div>
+
+    <span>कुल टेस्ट दिए</span>
+
+    <b id="totalSubmittedTests">
+      0
+    </b>
+
+  </div>
+
 </section>
+
+
+
+<!-- Main Actions -->
 
 <section class="home-actions">
- <a href="students.html" class="action-card"><span>👨‍🎓</span><h2>मेरे विद्यार्थी</h2><p>विद्यालय के विद्यार्थियों की सूची और जानकारी देखें</p></a>
- <a href="school-results.html" class="action-card"><span>📊</span><h2>विद्यार्थियों के रिजल्ट</h2><p>टेस्ट परिणाम, स्कोर और रैंक देखें</p></a>
- <a href="tet.html" class="action-card highlight"><span>📝</span><h2>शिक्षक पात्रता परीक्षा</h2><p>प्राथमिक और माध्यमिक शिक्षक परीक्षा की तैयारी करें</p></a>
+
+  <a href="students.html" class="action-card">
+
+    <span>👨‍🎓</span>
+
+    <h2>मेरे विद्यार्थी</h2>
+
+    <p>
+      विद्यालय के विद्यार्थियों की सूची और जानकारी देखें
+    </p>
+
+  </a>
+
+
+  <a href="school-results.html" class="action-card">
+
+    <span>📊</span>
+
+    <h2>विद्यार्थियों के रिजल्ट</h2>
+
+    <p>
+      टेस्ट परिणाम और विद्यालय की Performance देखें
+    </p>
+
+  </a>
+
+
+  <a href="tet.html" class="action-card highlight">
+
+    <span>📝</span>
+
+    <h2>शिक्षक पात्रता परीक्षा</h2>
+
+    <p>
+      प्राथमिक और माध्यमिक शिक्षक परीक्षा की तैयारी करें
+    </p>
+
+  </a>
+
 </section>
 
+
+
+<!-- Live Performance -->
+
 <section class="panel compact">
- <div class="section-head"><h2>आज की स्थिति</h2><span>28 अगस्त 2026</span></div>
- <div class="stats-grid">
-  <div class="stat"><span>📝</span><b>76</b><small>टेस्ट दिए</small></div>
-  <div class="stat"><span>✅</span><b>61</b><small>पूर्ण किए</small></div>
-  <div class="stat"><span>⭐</span><b>72%</b><small>औसत स्कोर</small></div>
-  <div class="stat"><span>🏆</span><b>12</b><small>उत्कृष्ट प्रदर्शन</small></div>
- </div>
+
+  <div class="section-head">
+
+    <h2>
+      विद्यालय की लाइव स्थिति
+    </h2>
+
+    <span id="todayDate">
+      —
+    </span>
+
+  </div>
+
+
+  <div class="stats-grid">
+
+
+    <div class="stat">
+
+      <span>📘</span>
+
+      <b id="class9Students">
+        0
+      </b>
+
+      <small>
+        कक्षा 9 विद्यार्थी
+      </small>
+
+    </div>
+
+
+
+    <div class="stat">
+
+      <span>📕</span>
+
+      <b id="class10Students">
+        0
+      </b>
+
+      <small>
+        कक्षा 10 विद्यार्थी
+      </small>
+
+    </div>
+
+
+
+    <div class="stat">
+
+      <span>📊</span>
+
+      <b id="averageScore">
+        0%
+      </b>
+
+      <small>
+        औसत प्रदर्शन
+      </small>
+
+    </div>
+
+
+
+    <div class="stat">
+
+      <span>🏆</span>
+
+      <b id="excellentStudents">
+        0
+      </b>
+
+      <small>
+        उत्कृष्ट प्रदर्शन
+      </small>
+
+    </div>
+
+
+  </div>
+
+
 </section>
+
+
+
+<!-- Class Wise Summary -->
+
+<section class="panel compact">
+
+  <div class="section-head">
+
+    <h2>
+      कक्षा अनुसार प्रदर्शन
+    </h2>
+
+  </div>
+
+
+  <div class="stats-grid">
+
+
+    <div class="stat">
+
+      <span>📘</span>
+
+      <b id="class9Average">
+        0%
+      </b>
+
+      <small>
+        कक्षा 9 औसत
+      </small>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span>📕</span>
+
+      <b id="class10Average">
+        0%
+      </b>
+
+      <small>
+        कक्षा 10 औसत
+      </small>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span>📝</span>
+
+      <b id="class9Tests">
+        0
+      </b>
+
+      <small>
+        कक्षा 9 टेस्ट
+      </small>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span>📝</span>
+
+      <b id="class10Tests">
+        0
+      </b>
+
+      <small>
+        कक्षा 10 टेस्ट
+      </small>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
 </main>
+
+
+
+<!-- Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase.js"></script>
+
 <script src="assets/js/app.js"></script>
-</body></html>
+
+
+</body>
+
+</html>
