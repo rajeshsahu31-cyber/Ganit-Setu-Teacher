@@ -18,10 +18,13 @@
     <p class="muted">अपनी जानकारी भरकर शिक्षक खाता बनाएं</p>
 
     <label>पूरा नाम</label>
-    <input id="fullName" placeholder="अपना पूरा नाम दर्ज करें">
+    <input id="fullName" placeholder="अपना पूरा नाम दर्ज करें" autocomplete="name">
 
     <label>मोबाइल नंबर</label>
-    <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर">
+    <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" autocomplete="tel">
+
+    <label>6 अंकों का पासवर्ड बनाएं</label>
+    <input id="teacherPassword" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="केवल 6 अंक" autocomplete="new-password">
 
     <label>विद्यालय का नाम</label>
     <input id="schoolName" placeholder="विद्यालय का नाम दर्ज करें">
