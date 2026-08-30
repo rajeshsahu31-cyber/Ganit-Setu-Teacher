@@ -1,291 +1,200 @@
-const params = new URLSearchParams(location.search);
-const requestedTestId = params.get('test_id');
-const requestedExamType = (params.get('type') || 'primary').toLowerCase();
-const requestedSet = (params.get('set') || 'A').toUpperCase();
+const params=new URLSearchParams(location.search);
+const examType=(params.get('type')||'primary').toLowerCase();
+const testSet=(params.get('set')||'A').toUpperCase();
 
-let test = null;
-let questions = [];
-let answers = {};
-let current = 0;
-let elapsed = 0;
-let timerId = null;
-let attemptId = null;
+let questions=[], answers={}, current=0, elapsed=0, timerId=null;
+let currentTest=null, currentTeacher=null, attemptId=null;
 
-const $ = id => document.getElementById(id);
-const esc = v => String(v ?? '')
-  .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-function getTeacherId(){
-  return sessionStorage.getItem('ganit_setu_teacher_id')
-      || sessionStorage.getItem('teacher_id')
-      || sessionStorage.getItem('teacherId')
-      || localStorage.getItem('ganit_setu_teacher_id')
-      || localStorage.getItem('teacher_id')
-      || null;
-}
+function optionLetter(i){return ['A','B','C','D'][i];}
 
-function optionLetter(i){ return ['A','B','C','D'][i]; }
-
-function tick(){
-  elapsed++;
-  const m = String(Math.floor(elapsed/60)).padStart(2,'0');
-  const s = String(elapsed%60).padStart(2,'0');
-  $('timer').textContent = `⏱️ ${m}:${s}`;
+function getTeacherFromSession(){
+  const keys=['ganit_setu_teacher','teacher','teacher_data','currentTeacher','loggedInTeacher'];
+  for(const key of keys){
+    try{
+      const raw=localStorage.getItem(key)||sessionStorage.getItem(key);
+      if(raw){
+        const obj=JSON.parse(raw);
+        if(obj && obj.id) return obj;
+      }
+    }catch(e){}
+  }
+  // Common separate ID keys
+  const idKeys=['teacher_id','ganit_setu_teacher_id','current_teacher_id'];
+  for(const key of idKeys){
+    const id=localStorage.getItem(key)||sessionStorage.getItem(key);
+    if(id) return {id};
+  }
+  return null;
 }
 
 function renderQuestion(){
-  const q = questions[current];
-  if(!q) return;
-
-  $('questionNumber').textContent = `प्रश्न ${current + 1} / ${questions.length}`;
-  $('questionText').textContent = q.question_text;
-
-  const opts = [q.option_a,q.option_b,q.option_c,q.option_d];
-  $('options').innerHTML = opts.map((text,i)=>{
-    const letter = optionLetter(i);
-    return `<button type="button" class="${answers[q.id]===letter?'selected':''}" data-answer="${letter}">
-      <b>${letter}.</b> ${esc(text)}
-    </button>`;
-  }).join('');
-
-  document.querySelectorAll('#options button').forEach(btn=>{
-    btn.onclick = ()=>{
-      answers[q.id] = btn.dataset.answer;
-      renderQuestion();
-    };
-  });
-
-  $('prevBtn').style.visibility = current===0 ? 'hidden' : 'visible';
-  $('nextBtn').textContent = current===questions.length-1 ? 'टेस्ट Submit करें ✓' : 'अगला प्रश्न →';
-  $('progressText').innerHTML =
-    `प्रगति: <b>${current+1}/${questions.length}</b> | उत्तर दिए: <b>${Object.keys(answers).length}</b>`;
+ if(!questions.length)return;
+ const q=questions[current];
+ $('questionNumber').textContent=`प्रश्न ${current+1}`;
+ $('questionText').textContent=q.question_text;
+ const opts=[q.option_a,q.option_b,q.option_c,q.option_d];
+ $('options').innerHTML=opts.map((text,i)=>{
+   const letter=optionLetter(i), selected=answers[q.id]===letter?'selected':'';
+   return `<button type="button" class="${selected}" data-letter="${letter}"><b>${letter}.</b> ${esc(text)}</button>`;
+ }).join('');
+ document.querySelectorAll('#options button').forEach(b=>b.onclick=()=>{
+   answers[q.id]=b.dataset.letter;
+   renderQuestion();
+ });
+ $('prevBtn').style.visibility=current===0?'hidden':'visible';
+ $('nextBtn').textContent=current===questions.length-1?'टेस्ट Submit करें ✓':'अगला प्रश्न →';
+ $('progressText').textContent=`प्रगति: ${current+1}/${questions.length} | उत्तर दिए: ${Object.keys(answers).length}`;
 }
 
-async function resolveTest(){
-  if(requestedTestId){
-    const {data,error} = await supabaseClient
-      .from('teacher_tests')
-      .select('*')
-      .eq('id', requestedTestId)
-      .single();
-    if(error) throw error;
-    return data;
-  }
-
-  const {data,error} = await supabaseClient
-    .from('teacher_tests')
-    .select('*')
-    .eq('exam_type', requestedExamType)
-    .eq('test_set', requestedSet)
-    .eq('status','active')
-    .maybeSingle();
-
-  if(error) throw error;
-  return data;
+function tick(){
+ elapsed++;
+ const m=String(Math.floor(elapsed/60)).padStart(2,'0');
+ const s=String(elapsed%60).padStart(2,'0');
+ $('timer').textContent=`⏱️ ${m}:${s}`;
 }
 
-async function loadTestQuestions(testId){
-  const {data,error} = await supabaseClient
-    .from('teacher_test_questions')
-    .select(`
-      question_id,
-      section_number,
-      question_order,
-      teacher_questions (
-        id, question_text,
-        option_a, option_b, option_c, option_d,
-        correct_answer, section_name
-      )
-    `)
-    .eq('test_id',testId)
-    .order('question_order',{ascending:true});
+async function loadQuestions(){
+ $('testType').textContent=examType==='secondary'?'माध्यमिक शिक्षक अभ्यास टेस्ट':'प्राथमिक शिक्षक अभ्यास टेस्ट';
+ $('setLabel').textContent='Set '+testSet;
+ currentTeacher=getTeacherFromSession();
 
-  if(error) throw error;
+ if(!currentTeacher?.id){
+   $('loadingBox').innerHTML='🔐 Teacher की login जानकारी नहीं मिली। कृपया Teacher Panel से दोबारा Login करें।';
+   return;
+ }
 
-  return (data||[])
-    .map(row=>({
-      ...(row.teacher_questions || {}),
-      section_number: row.section_number,
-      question_order: row.question_order
-    }))
-    .filter(q=>q.id);
-}
+ try{
+   // First find the real test record so attempt has a valid test_id.
+   const testRes=await supabaseClient.from('teacher_tests')
+     .select('*').eq('exam_type',examType).eq('test_set',testSet)
+     .eq('status','active').limit(1).maybeSingle();
 
-async function createAttempt(){
-  const teacherId = getTeacherId();
+   if(testRes.error) throw testRes.error;
+   currentTest=testRes.data;
 
-  if(!teacherId){
-    throw new Error('Teacher ID नहीं मिला। कृपया Teacher Panel से दोबारा Login करें।');
-  }
+   let qres;
+   if(currentTest?.id){
+     // Preferred: questions assigned to this real test.
+     qres=await supabaseClient.from('teacher_test_questions')
+       .select('question_order,section_number,teacher_questions(*)')
+       .eq('test_id',currentTest.id).order('question_order',{ascending:true});
 
-  const {data,error} = await supabaseClient
-    .from('teacher_attempts')
-    .insert({
-      teacher_id: teacherId,
-      test_id: test.id,
-      started_at: new Date().toISOString(),
-      total_questions: questions.length,
-      attempted_questions: 0,
-      correct_answers: 0,
-      wrong_answers: 0,
-      unanswered_questions: questions.length,
-      score: 0,
-      percentage: 0,
-      status: 'in_progress'
-    })
-    .select('id')
-    .single();
+     if(qres.error) throw qres.error;
+     questions=(qres.data||[]).map(x=>x.teacher_questions).filter(Boolean);
+   }
 
-  if(error) throw error;
-  attemptId = data.id;
-}
+   // Fallback for existing setup: live question bank by exam + set.
+   if(!questions.length){
+     qres=await supabaseClient.from('teacher_questions').select('*')
+       .eq('exam_type',examType).eq('set_name',testSet).eq('is_active',true)
+       .order('section_number',{ascending:true}).order('created_at',{ascending:true});
+     if(qres.error) throw qres.error;
+     questions=qres.data||[];
+   }
 
-async function loadEverything(){
-  try{
-    $('loadingBox').textContent = '⏳ वास्तविक Test खोजा जा रहा है...';
+   if(!currentTest){
+     $('loadingBox').innerHTML='⚠️ Questions मिल गए, लेकिन इस Exam Type / Set के लिए `teacher_tests` में Active Test नहीं मिला। पहले Admin/Supabase में Primary/Secondary + Set A/B/C का Test record बनाना जरूरी है ताकि Result Save हो सके।';
+     return;
+   }
 
-    test = await resolveTest();
+   $('testInfo').textContent=`CBT • ${questions.length} प्रश्न • Live Test`;
+   if(!questions.length){
+     $('loadingBox').innerHTML='📭 इस Test के लिए कोई Live Question उपलब्ध नहीं है।';
+     return;
+   }
 
-    if(!test){
-      $('loadingBox').innerHTML =
-        `📭 ${esc(requestedExamType)} Set ${esc(requestedSet)} के लिए कोई Active Test नहीं मिला।<br><br>
-         पहले Admin/Supabase में <b>teacher_tests</b> में Active Test और उसके Questions जोड़ें।`;
-      return;
-    }
+   // Create one in-progress attempt immediately.
+   const start=await supabaseClient.from('teacher_attempts').insert({
+     teacher_id:currentTeacher.id,
+     test_id:currentTest.id,
+     total_questions:questions.length,
+     status:'in_progress'
+   }).select('id').single();
 
-    $('testType').textContent =
-      test.exam_type==='secondary' ? 'माध्यमिक शिक्षक पात्रता परीक्षा' : 'प्राथमिक शिक्षक पात्रता परीक्षा';
-    $('setLabel').textContent = `Set ${test.test_set}`;
+   if(start.error) throw start.error;
+   attemptId=start.data.id;
 
-    $('loadingBox').textContent = '⏳ इस Test के वास्तविक Questions लोड हो रहे हैं...';
-    questions = await loadTestQuestions(test.id);
-
-    if(!questions.length){
-      $('loadingBox').innerHTML =
-        '📭 इस Test में कोई Question नहीं जोड़ा गया है।<br>' +
-        'Questions को <b>teacher_test_questions</b> table में इस Test से जोड़ना जरूरी है।';
-      return;
-    }
-
-    $('testInfo').textContent =
-      `${test.test_title || 'TET Test'} • ${questions.length} प्रश्न • ${test.duration_minutes || 0} मिनट`;
-
-    // Attempt create होने के बाद ही Test शुरू होगा
-    await createAttempt();
-
-    $('loadingBox').style.display = 'none';
-    $('testContent').style.display = 'block';
-    renderQuestion();
-    timerId = setInterval(tick,1000);
-
-  }catch(error){
-    console.error('TET Load Error:',error);
-    $('loadingBox').innerHTML =
-      `<div class="error-box">❌ <b>Test शुरू नहीं हो सका</b><br>${esc(error.message||'Unknown error')}</div>`;
-  }
+   $('loadingBox').style.display='none';
+   $('testContent').style.display='block';
+   renderQuestion();
+   timerId=setInterval(tick,1000);
+ }catch(e){
+   console.error('TET load/start error:',e);
+   $('loadingBox').innerHTML=`❌ Test शुरू नहीं हो सका: ${esc(e.message||'Unknown error')}`;
+ }
 }
 
 async function submitTest(){
-  if(!attemptId){
-    alert('Attempt ID उपलब्ध नहीं है। Test सुरक्षित रूप से Submit नहीं किया जा सकता।');
-    return;
-  }
+ if(!attemptId) return alert('Attempt शुरू नहीं हुआ है, इसलिए Result Save नहीं किया जा सकता।');
+ if(!confirm('क्या आप टेस्ट Submit करना चाहते हैं?')) return;
 
-  clearInterval(timerId);
-  $('nextBtn').disabled = true;
-  $('prevBtn').disabled = true;
+ $('nextBtn').disabled=true;
+ $('prevBtn').disabled=true;
+ clearInterval(timerId);
 
-  let correct=0, wrong=0, unanswered=0;
+ let correct=0,wrong=0,unanswered=0;
+ const answerRows=questions.map(q=>{
+   const selected=answers[q.id]||null;
+   const isCorrect=selected ? selected===q.correct_answer : null;
+   if(!selected) unanswered++;
+   else if(isCorrect) correct++;
+   else wrong++;
+   return {attempt_id:attemptId,question_id:q.id,selected_answer:selected,is_correct:isCorrect};
+ });
 
-  questions.forEach(q=>{
-    const selected = answers[q.id];
-    if(!selected) unanswered++;
-    else if(selected===q.correct_answer) correct++;
-    else wrong++;
-  });
+ const attempted=correct+wrong;
+ const total=questions.length;
+ const score=correct;
+ const percentage=total?Number(((correct/total)*100).toFixed(2)):0;
 
-  const attempted = questions.length - unanswered;
-  const score = correct;
-  const percentage = questions.length
-    ? Number(((correct/questions.length)*100).toFixed(2))
-    : 0;
+ try{
+   // Save answers. Unanswered questions are intentionally not inserted because selected_answer is constrained to A-D.
+   const answeredRows=answerRows.filter(x=>x.selected_answer);
+   if(answeredRows.length){
+     const ares=await supabaseClient.from('teacher_answers').insert(answeredRows);
+     if(ares.error) throw ares.error;
+   }
 
-  $('testContent').style.display='none';
-  $('testMessage').innerHTML =
-    '<div class="success-box"><h2>⏳ आपका Attempt Supabase में Save हो रहा है...</h2></div>';
+   const update=await supabaseClient.from('teacher_attempts').update({
+     submitted_at:new Date().toISOString(),
+     time_taken_seconds:elapsed,
+     total_questions:total,
+     attempted_questions:attempted,
+     correct_answers:correct,
+     wrong_answers:wrong,
+     unanswered_questions:unanswered,
+     score:score,
+     percentage:percentage,
+     status:'submitted'
+   }).eq('id',attemptId);
 
-  try{
-    const answerRows = questions
-      .filter(q=>answers[q.id])
-      .map(q=>({
-        attempt_id: attemptId,
-        question_id: q.id,
-        selected_answer: answers[q.id],
-        is_correct: answers[q.id]===q.correct_answer,
-        answered_at: new Date().toISOString()
-      }));
+   if(update.error) throw update.error;
 
-    if(answerRows.length){
-      const {error:answersError} = await supabaseClient
-        .from('teacher_answers')
-        .insert(answerRows);
-      if(answersError) throw answersError;
-    }
-
-    const {error:attemptError} = await supabaseClient
-      .from('teacher_attempts')
-      .update({
-        submitted_at: new Date().toISOString(),
-        time_taken_seconds: elapsed,
-        total_questions: questions.length,
-        attempted_questions: attempted,
-        correct_answers: correct,
-        wrong_answers: wrong,
-        unanswered_questions: unanswered,
-        score: score,
-        percentage: percentage,
-        status: 'submitted'
-      })
-      .eq('id',attemptId);
-
-    if(attemptError) throw attemptError;
-
-    $('testMessage').innerHTML = `<div class="success-box">
-      <h2>✅ टेस्ट सफलतापूर्वक Submit हो गया</h2>
-      <p>📚 Test: <b>${esc(test.test_title)}</b></p>
-      <p>कुल प्रश्न: <b>${questions.length}</b></p>
-      <p>सही: <b>${correct}</b> | गलत: <b>${wrong}</b> | बिना उत्तर: <b>${unanswered}</b></p>
-      <p>🎯 Score: <b>${score}/${questions.length}</b> (${percentage}%)</p>
-      <p>⏱️ समय: ${Math.floor(elapsed/60)} मिनट ${elapsed%60} सेकंड</p>
-      <p>💾 पूरा Attempt और दिए गए Answers Supabase में Save हो गए हैं।</p>
-      <a class="primary-btn" href="tet.html">वापस जाएँ</a>
-    </div>`;
-
-  }catch(error){
-    console.error('Submit Error:',error);
-    $('testMessage').innerHTML = `<div class="error-box">
-      <h2>⚠️ Result बन गया, लेकिन Supabase में Save नहीं हो सका</h2>
-      <p>${esc(error.message||'Unknown error')}</p>
-      <p>कृपया इस error का screenshot भेजें।</p>
-    </div>`;
-  }
+   $('testContent').style.display='none';
+   $('testMessage').innerHTML=`<div class="success-box">
+    <h2>✅ परिणाम सुरक्षित हो गया</h2>
+    <p>कुल प्रश्न: <b>${total}</b></p>
+    <p>सही: <b>${correct}</b> | गलत: <b>${wrong}</b> | छोड़े: <b>${unanswered}</b></p>
+    <p>स्कोर: <b>${score}/${total}</b> (${percentage}%)</p>
+    <p>⏱️ समय: ${Math.floor(elapsed/60)} मिनट ${elapsed%60} सेकंड</p>
+    <p>☁️ Result Supabase में सफलतापूर्वक Save हो गया है।</p>
+    <a class="primary-btn" href="tet.html">वापस TET Dashboard</a>
+   </div>`;
+ }catch(e){
+   console.error('Save result error:',e);
+   // Keep attempt recoverable instead of falsely showing success.
+   $('nextBtn').disabled=false;
+   $('prevBtn').disabled=false;
+   $('testMessage').innerHTML=`<div class="error-box"><h2>❌ Result Supabase में Save नहीं हुआ</h2><p>${esc(e.message||'Unknown error')}</p><p>कृपया screenshot भेजें।</p></div>`;
+ }
 }
 
-$('nextBtn').onclick = ()=>{
-  if(current < questions.length-1){
-    current++;
-    renderQuestion();
-  }else{
-    submitTest();
-  }
+$('nextBtn').onclick=()=>{
+ if(current<questions.length-1){current++;renderQuestion();}
+ else submitTest();
 };
-
-$('prevBtn').onclick = ()=>{
-  if(current>0){
-    current--;
-    renderQuestion();
-  }
-};
-
-document.addEventListener('DOMContentLoaded',loadEverything);
+$('prevBtn').onclick=()=>{if(current>0){current--;renderQuestion();}};
+document.addEventListener('DOMContentLoaded',loadQuestions);
