@@ -15,18 +15,18 @@
 
   <section class="form-box">
     <h2>शिक्षक लॉगिन</h2>
-    <p class="muted">अपनी शिक्षक आईडी और मोबाइल नंबर दर्ज करें</p>
+    <p class="muted">अपनी शिक्षक आईडी या मोबाइल नंबर और पासवर्ड दर्ज करें</p>
 
-    <label>शिक्षक आईडी</label>
-    <input id="teacherId" placeholder="उदाहरण: GS-T-00001">
+    <label>शिक्षक आईडी / मोबाइल नंबर</label>
+    <input id="loginId" placeholder="GS-T-00001 या 9876543210" autocomplete="username" style="text-transform:uppercase;">
 
-    <label>मोबाइल नंबर</label>
-    <input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर">
+    <label>6 अंकों का पासवर्ड</label>
+    <input id="password" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="••••••" autocomplete="current-password">
 
     <button class="primary-btn" id="loginBtn" type="button">लॉगिन करें</button>
 
     <p id="loginStatus" class="muted" style="margin-top:12px;"></p>
-    <p class="auth-switch">नया शिक्षक हैं? <a href="register.html">पंजीकरण करें</a></p>
+    <p class="auth-switch">नए शिक्षक हैं? <a href="register.html">पंजीकरण करें</a></p>
   </section>
 </main>
 
