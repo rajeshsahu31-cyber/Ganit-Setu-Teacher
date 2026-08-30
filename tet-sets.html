@@ -294,20 +294,36 @@ async function openSelectedSet(set){
 }
 
 async function checkPremiumAccess(publicTeacherId, examType, testSet){
-  if(!publicTeacherId || typeof supabaseClient === 'undefined') return false;
+  const teacherId = String(publicTeacherId || '').trim().toUpperCase();
+  const exam = String(examType || '').trim().toLowerCase();
+  const setName = String(testSet || '').trim().toUpperCase();
+
+  console.log('PREMIUM CHECK:', { teacherId, exam, setName, supabaseReady: typeof supabaseClient !== 'undefined' });
+
+  if(!teacherId){
+    alert('⚠️ Teacher Login नहीं मिला। कृपया पहले Logout करके दोबारा Login करें।');
+    return false;
+  }
+
+  if(typeof supabaseClient === 'undefined'){
+    alert('⚠️ Supabase connection तैयार नहीं हुआ। कृपया page refresh करें।');
+    return false;
+  }
 
   try{
     const { data, error } = await supabaseClient.rpc(
       'check_teacher_premium_access',
       {
-        p_teacher_public_id: publicTeacherId,
-        p_exam_type: examType,
-        p_test_set: testSet
+        p_teacher_public_id: teacherId,
+        p_exam_type: exam,
+        p_test_set: setName
       }
     );
 
+    console.log('PREMIUM RPC RESULT:', { data, error });
+
     if(error){
-      console.error('Premium access check failed:', error);
+      alert('Premium Access Check Error: ' + error.message);
       return false;
     }
 
@@ -315,6 +331,7 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
 
   }catch(err){
     console.error('Premium access check failed:', err);
+    alert('Premium Access Check Error: ' + (err.message || 'Unknown error'));
     return false;
   }
 }
@@ -330,9 +347,10 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
 
     /* Owner/Admin + Supabase Premium Access */
     const ownerTeacherIds = ['GS-T-0004'];
-    const currentTeacherId =
+    const currentTeacherId = String(
       sessionStorage.getItem('ganit_setu_teacher_id') ||
-      localStorage.getItem('ganit_setu_teacher_id') || '';
+      localStorage.getItem('ganit_setu_teacher_id') || ''
+    ).trim().toUpperCase();
 
     if(set === 'B' || set === 'C'){
       if(ownerTeacherIds.includes(currentTeacherId)){
@@ -427,3 +445,4 @@ document
 
 </body>
 </html>
+ 
