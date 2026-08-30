@@ -2,25 +2,32 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>शिक्षक टेस्ट | गणित सेतु</title>
+<title>शिक्षक पात्रता परीक्षा टेस्ट | गणित सेतु</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand">शिक्षक अभ्यास टेस्ट</div></header>
+<header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand">शिक्षक पात्रता परीक्षा</div></header>
 <main class="page narrow">
 <section class="panel test-panel">
- <div class="test-meta"><span id="testType">अभ्यास टेस्ट</span><span id="setLabel">Set A</span><span>CBT • 50 प्रश्न • 50 मिनट</span><span>⏱️ 00:00</span></div>
- <h1>प्रश्न 1</h1>
- <div class="question-box">बाल-केंद्रित शिक्षण का मुख्य उद्देश्य क्या है?</div>
- <div class="options">
-  <button onclick="selectOption(this)">केवल शिक्षक को सक्रिय रखना</button>
-  <button onclick="selectOption(this)">बच्चे को सीखने की प्रक्रिया में सक्रिय बनाना</button>
-  <button onclick="selectOption(this)">केवल परीक्षा की तैयारी करना</button>
-  <button onclick="selectOption(this)">पाठ्यपुस्तक को याद कराना</button>
+ <div class="test-meta">
+  <span id="testType">अभ्यास टेस्ट</span><span id="setLabel">Set A</span>
+  <span id="testInfo">⏳ प्रश्न लोड हो रहे हैं...</span><span id="timer">⏱️ 00:00</span>
  </div>
- <div class="test-nav"><a class="outline-btn" href="tet.html">बाहर जाएँ</a><button class="primary-btn" onclick="finishTest()">अगला प्रश्न →</button></div>
+ <div id="loadingBox">⏳ Supabase से Live Questions लोड हो रहे हैं...</div>
+ <div id="testContent" style="display:none">
+  <h1 id="questionNumber">प्रश्न 1</h1>
+  <div class="question-box" id="questionText"></div>
+  <div class="options" id="options"></div>
+  <div class="test-nav">
+   <button class="outline-btn" id="prevBtn" type="button">← पिछला</button>
+   <button class="primary-btn" id="nextBtn" type="button">अगला प्रश्न →</button>
+  </div>
+  <div id="progressText" style="margin-top:12px"></div>
+ </div>
  <div id="testMessage"></div>
 </section>
 </main>
-<script src="assets/js/tet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/tet.js?v=20260830-live1"></script>
 </body></html>
