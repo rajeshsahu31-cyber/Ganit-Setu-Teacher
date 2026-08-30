@@ -12,9 +12,9 @@
  <h1>विद्यालय के टेस्ट परिणाम</h1>
  <p class="muted">यहाँ शिक्षक केवल अपने विद्यालय के बच्चों का परिणाम देखेगा।</p>
  <div class="summary-row">
-  <div><small>कुल टेस्ट</small><b>76</b></div>
-  <div><small>औसत स्कोर</small><b>72%</b></div>
-  <div><small>सर्वश्रेष्ठ स्कोर</small><b>100%</b></div>
+  <div><small>कुल परिणाम</small><b id="totalResults">0</b></div>
+  <div><small>औसत प्रतिशत</small><b id="averageScore">0%</b></div>
+  <div><small>सर्वश्रेष्ठ प्रतिशत</small><b id="bestScore">0%</b></div>
  </div>
  <div class="table-wrap">
   <div class="table-head result-table"><span>विद्यार्थी</span><span>टेस्ट</span><span>स्कोर</span><span>समय</span><span>रैंक</span></div>
@@ -22,5 +22,7 @@
  </div>
 </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
 <script src="assets/js/results.js"></script>
 </body></html>
