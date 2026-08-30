@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Premium Test | गणित सेतु</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.premium-box{text-align:center;padding:32px 20px}
+.premium-icon{font-size:58px;margin-bottom:12px}
+.premium-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.premium-info{margin:20px auto 0;max-width:650px;text-align:left;padding:18px;border-radius:14px;background:#fff8e6;line-height:1.7}
+</style>
+</head>
+<body>
+<header class="simple-header">
+  <a id="backLink" href="tet.html">← वापस</a>
+  <div class="mini-brand">🔒 Premium Test</div>
+</header>
+
+<main class="page narrow">
+<section class="panel premium-box">
+  <div class="premium-icon">🔒</div>
+  <h1 id="title">Premium Set</h1>
+  <p class="muted" id="subtitle">यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध होगा।</p>
+
+  <div class="premium-info">
+    <b>🆓 Set A:</b> हमेशा Free<br>
+    <b>🔒 Set B और Set C:</b> Premium अभ्यास सेट<br><br>
+    अभी आपका वर्तमान Test, Result, History और Leaderboard system बिल्कुल सुरक्षित है।
+    Payment Gateway जोड़ने के बाद यहीं से सुरक्षित Payment और Automatic Unlock की सुविधा जोड़ी जाएगी।
+  </div>
+
+  <div class="premium-actions">
+    <a class="outline-btn" id="freeSetLink" href="#">🆓 Free Set A पर जाएँ</a>
+    <a class="primary-btn" id="backSetLink" href="#">← Set Selection</a>
+  </div>
+</section>
+</main>
+
+<script>
+const p=new URLSearchParams(location.search);
+const type=p.get('type')==='secondary'?'secondary':'primary';
+const set=(p.get('set')||'B').toUpperCase();
+const exam=type==='secondary'?'माध्यमिक शिक्षक पात्रता परीक्षा':'प्राथमिक शिक्षक पात्रता परीक्षा';
+
+document.getElementById('title').textContent=`${exam} • Set ${set}`;
+document.getElementById('subtitle').textContent=`Set ${set} Premium अभ्यास सेट है।`;
+document.getElementById('backLink').href=`tet-sets.html?type=${type}`;
+document.getElementById('backSetLink').href=`tet-sets.html?type=${type}`;
+
+const free=document.getElementById('freeSetLink');
+if(type==='primary'){
+  free.href=`tet-sets.html?type=primary`;
+}else{
+  free.href=`tet-test.html?type=secondary&set=A`;
+}
+</script>
+<script src="assets/js/ui.js"></script>
+</body>
+</html>
