@@ -294,32 +294,25 @@ async function openSelectedSet(set){
 }
 
 async function checkPremiumAccess(publicTeacherId, examType, testSet){
-  if(!publicTeacherId || !window.supabaseClient) return false;
+  if(!publicTeacherId || typeof supabaseClient === 'undefined') return false;
 
   try{
-    const teacherRes = await supabaseClient
-      .from('teachers')
-      .select('id')
-      .eq('teacher_id', publicTeacherId)
-      .maybeSingle();
+    const { data, error } = await supabaseClient.rpc(
+      'check_teacher_premium_access',
+      {
+        p_teacher_public_id: publicTeacherId,
+        p_exam_type: examType,
+        p_test_set: testSet
+      }
+    );
 
-    if(teacherRes.error || !teacherRes.data?.id) return false;
+    if(error){
+      console.error('Premium access check failed:', error);
+      return false;
+    }
 
-    const accessRes = await supabaseClient
-      .from('teacher_premium_access')
-      .select('id, access_status, payment_status, expires_at')
-      .eq('teacher_id', teacherRes.data.id)
-      .eq('exam_type', examType)
-      .eq('test_set', testSet)
-      .eq('access_status', 'active')
-      .maybeSingle();
+    return data === true;
 
-    if(accessRes.error || !accessRes.data) return false;
-
-    const expires = accessRes.data.expires_at;
-    if(expires && new Date(expires).getTime() < Date.now()) return false;
-
-    return true;
   }catch(err){
     console.error('Premium access check failed:', err);
     return false;
