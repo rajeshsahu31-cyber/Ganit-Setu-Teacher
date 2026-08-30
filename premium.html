@@ -49,6 +49,16 @@ document.getElementById('subtitle').textContent=`Set ${set} Premium अभ्य
 document.getElementById('backLink').href=`tet-sets.html?type=${type}`;
 document.getElementById('backSetLink').href=`tet-sets.html?type=${type}`;
 
+const ownerTeacherIds=['GS-T-0004'];
+const currentTeacherId=sessionStorage.getItem('ganit_setu_teacher_id') ||
+                       localStorage.getItem('ganit_setu_teacher_id') || '';
+
+if(ownerTeacherIds.includes(currentTeacherId)){
+  location.href = type==='primary'
+    ? `tet-sets.html?type=primary`
+    : `tet-test.html?type=secondary&set=${set}`;
+}
+
 const free=document.getElementById('freeSetLink');
 if(type==='primary'){
   free.href=`tet-sets.html?type=primary`;
