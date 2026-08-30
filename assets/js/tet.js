@@ -68,7 +68,13 @@ async function loadQuestions(){
 
    if(error) throw error;
    let rows=data||[];
-
+console.log('=== TET DEBUG START ===');
+console.log('examType:', examType);
+console.log('testSet:', testSet);
+console.log('language2:', language2);
+console.log('Total rows from Supabase:', rows.length);
+console.log('All rows:', rows);
+console.log('=== TET DEBUG END ===');
    if(isPrimary){
      // Sections 1,2,4,5 are common. Section 3 depends on Language-2.
      rows=rows.filter(q=>{
