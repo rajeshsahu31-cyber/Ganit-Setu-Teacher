@@ -287,9 +287,27 @@ let selectedSet = null;
   card.addEventListener('click', function(e){
     e.preventDefault();
 
-    /* Set B/C are intentionally locked for the Premium flow. */
+    /* Owner/Admin gets all Premium Sets free. */
+    const ownerTeacherIds = ['GS-T-0004'];
+    const currentTeacherId =
+      sessionStorage.getItem('ganit_setu_teacher_id') ||
+      localStorage.getItem('ganit_setu_teacher_id') || '';
+
     if(set === 'B' || set === 'C'){
-      location.href = `premium.html?type=${type}&set=${set}`;
+      if(ownerTeacherIds.includes(currentTeacherId)){
+        if(type === 'primary'){
+          selectedSet = set;
+          document.getElementById('languageChoice').classList.add('active');
+          document.getElementById('languageChoice').scrollIntoView({
+            behavior:'smooth',
+            block:'center'
+          });
+        }else{
+          location.href = `tet-test.html?type=${type}&set=${set}`;
+        }
+      }else{
+        location.href = `premium.html?type=${type}&set=${set}`;
+      }
       return;
     }
 
@@ -353,6 +371,20 @@ document
 
 
 <script src="assets/js/ui.js"></script>
+
+<script>
+(function(){
+  const ownerTeacherIds=['GS-T-0004'];
+  const currentTeacherId=sessionStorage.getItem('ganit_setu_teacher_id') ||
+                         localStorage.getItem('ganit_setu_teacher_id') || '';
+  if(ownerTeacherIds.includes(currentTeacherId)){
+    const note=document.querySelector('.premium-note');
+    if(note){
+      note.innerHTML='<b>👑 Owner Access Active:</b> आपके लिए Set A, Set B और Set C सभी Free हैं।';
+    }
+  }
+})();
+</script>
 
 </body>
 </html>
