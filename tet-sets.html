@@ -150,7 +150,7 @@
 
   <div class="premium-note">
     <b>ℹ️ Premium योजना:</b> Set A सभी शिक्षकों के लिए Free है।
-    Set B और Set C Premium अभ्यास सेट हैं। Payment system अगले चरण में जोड़ा जाएगा।
+    Set B और Set C Premium अभ्यास सेट हैं। Database Premium Access system सक्रिय है। Payment और Coupon system बाद में इसी से जोड़े जाएंगे।
   </div>
 
   <!-- LANGUAGE 2 SELECTION -->
@@ -227,6 +227,8 @@
 </main>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
 <script>
 
 const p = new URLSearchParams(location.search);
@@ -278,16 +280,62 @@ document.querySelectorAll('.setPattern').forEach(el => {
 let selectedSet = null;
 
 
+async function openSelectedSet(set){
+  if(type === 'primary'){
+    selectedSet = set;
+    document.getElementById('languageChoice').classList.add('active');
+    document.getElementById('languageChoice').scrollIntoView({
+      behavior:'smooth',
+      block:'center'
+    });
+  }else{
+    location.href = `tet-test.html?type=${type}&set=${set}`;
+  }
+}
+
+async function checkPremiumAccess(publicTeacherId, examType, testSet){
+  if(!publicTeacherId || !window.supabaseClient) return false;
+
+  try{
+    const teacherRes = await supabaseClient
+      .from('teachers')
+      .select('id')
+      .eq('teacher_id', publicTeacherId)
+      .maybeSingle();
+
+    if(teacherRes.error || !teacherRes.data?.id) return false;
+
+    const accessRes = await supabaseClient
+      .from('teacher_premium_access')
+      .select('id, access_status, payment_status, expires_at')
+      .eq('teacher_id', teacherRes.data.id)
+      .eq('exam_type', examType)
+      .eq('test_set', testSet)
+      .eq('access_status', 'active')
+      .maybeSingle();
+
+    if(accessRes.error || !accessRes.data) return false;
+
+    const expires = accessRes.data.expires_at;
+    if(expires && new Date(expires).getTime() < Date.now()) return false;
+
+    return true;
+  }catch(err){
+    console.error('Premium access check failed:', err);
+    return false;
+  }
+}
+
 ['A','B','C'].forEach(set => {
 
   const card = document.getElementById('set' + set);
 
   card.href = '#';
 
-  card.addEventListener('click', function(e){
+  card.addEventListener('click', async function(e){
     e.preventDefault();
 
-    /* Owner/Admin gets all Premium Sets free. */
+    /* Owner/Admin + Supabase Premium Access */
     const ownerTeacherIds = ['GS-T-0004'];
     const currentTeacherId =
       sessionStorage.getItem('ganit_setu_teacher_id') ||
@@ -295,16 +343,14 @@ let selectedSet = null;
 
     if(set === 'B' || set === 'C'){
       if(ownerTeacherIds.includes(currentTeacherId)){
-        if(type === 'primary'){
-          selectedSet = set;
-          document.getElementById('languageChoice').classList.add('active');
-          document.getElementById('languageChoice').scrollIntoView({
-            behavior:'smooth',
-            block:'center'
-          });
-        }else{
-          location.href = `tet-test.html?type=${type}&set=${set}`;
-        }
+        openSelectedSet(set);
+        return;
+      }
+
+      const hasAccess = await checkPremiumAccess(currentTeacherId, type, set);
+
+      if(hasAccess){
+        openSelectedSet(set);
       }else{
         location.href = `premium.html?type=${type}&set=${set}`;
       }
