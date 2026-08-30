@@ -48,6 +48,21 @@
 .language-btn:hover{
   transform:translateY(-2px);
 }
+
+.premium-card{position:relative;overflow:hidden}
+.premium-badge{
+  display:inline-block;margin:8px 0;padding:6px 12px;border-radius:999px;
+  font-size:13px;font-weight:800;background:#fff3cd;border:1px solid #f0c36d;
+}
+.free-badge{
+  display:inline-block;margin:8px 0;padding:6px 12px;border-radius:999px;
+  font-size:13px;font-weight:800;background:#e8f7ee;border:1px solid #77c593;
+}
+.premium-note{
+  margin-top:18px;padding:14px 16px;border-radius:12px;
+  background:#fff8e6;font-size:14px;line-height:1.6;
+}
+
 </style>
 
 </head>
@@ -86,7 +101,7 @@
 
       <span>🅰️</span>
 
-      <h2>Set A</h2>
+      <h2>Set A</h2><div class="free-badge">🆓 Free</div>
 
       <p class="setPattern">
         पैटर्न लोड हो रहा है...
@@ -99,11 +114,11 @@
 
     <!-- SET B -->
 
-    <a id="setB" class="set-card" href="#">
+    <a id="setB" class="set-card premium-card" href="#">
 
       <span>🅱️</span>
 
-      <h2>Set B</h2>
+      <h2>Set B</h2><div class="premium-badge">🔒 Premium</div>
 
       <p class="setPattern">
         पैटर्न लोड हो रहा है...
@@ -116,11 +131,11 @@
 
     <!-- SET C -->
 
-    <a id="setC" class="set-card" href="#">
+    <a id="setC" class="set-card premium-card" href="#">
 
       <span>🅲</span>
 
-      <h2>Set C</h2>
+      <h2>Set C</h2><div class="premium-badge">🔒 Premium</div>
 
       <p class="setPattern">
         पैटर्न लोड हो रहा है...
@@ -132,6 +147,11 @@
 
   </div>
 
+
+  <div class="premium-note">
+    <b>ℹ️ Premium योजना:</b> Set A सभी शिक्षकों के लिए Free है।
+    Set B और Set C Premium अभ्यास सेट हैं। Payment system अगले चरण में जोड़ा जाएगा।
+  </div>
 
   <!-- LANGUAGE 2 SELECTION -->
 
@@ -262,24 +282,24 @@ let selectedSet = null;
 
   const card = document.getElementById('set' + set);
 
+  card.href = '#';
 
-  if(type === 'primary'){
+  card.addEventListener('click', function(e){
+    e.preventDefault();
 
-    card.href = '#';
+    /* Set B/C are intentionally locked for the Premium flow. */
+    if(set === 'B' || set === 'C'){
+      location.href = `premium.html?type=${type}&set=${set}`;
+      return;
+    }
 
-
-    card.addEventListener('click', function(e){
-
-      e.preventDefault();
-
-
+    /* Set A remains free. */
+    if(type === 'primary'){
       selectedSet = set;
-
 
       document
         .getElementById('languageChoice')
         .classList.add('active');
-
 
       document
         .getElementById('languageChoice')
@@ -287,18 +307,10 @@ let selectedSet = null;
           behavior:'smooth',
           block:'center'
         });
-
-    });
-
-
-  }else{
-
-
-    card.href =
-      `tet-test.html?type=${type}&set=${set}`;
-
-
-  }
+    }else{
+      location.href = `tet-test.html?type=${type}&set=${set}`;
+    }
+  });
 
 });
 
