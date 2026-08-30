@@ -2,549 +2,119 @@ function digitsOnly(value) {
   return String(value || '').replace(/\D/g, '');
 }
 
+function saveTeacherSession(data) {
+  sessionStorage.setItem('ganit_setu_teacher_id', data.teacher_id || '');
+  sessionStorage.setItem('ganit_setu_teacher_mobile', data.mobile || '');
+  sessionStorage.setItem('ganit_setu_teacher_dise_code', data.school_dise_code || '');
+  sessionStorage.setItem('ganit_setu_teacher_name', data.full_name || '');
+  sessionStorage.setItem('ganit_setu_teacher_school', data.school_name || '');
+}
 
 async function registerTeacher() {
+  const fullName = document.getElementById('fullName')?.value.trim();
+  const mobile = digitsOnly(document.getElementById('mobile')?.value);
+  const password = digitsOnly(document.getElementById('teacherPassword')?.value);
+  const schoolName = document.getElementById('schoolName')?.value.trim();
+  const schoolDiseCode = digitsOnly(document.getElementById('schoolDiseCode')?.value);
+  const district = document.getElementById('district')?.value.trim();
+  const block = document.getElementById('block')?.value.trim();
+  const status = document.getElementById('registerStatus');
+  const btn = document.getElementById('registerBtn');
 
-  const fullName =
-    document.getElementById('fullName')?.value.trim();
-
-  const mobile =
-    digitsOnly(document.getElementById('mobile')?.value);
-
-  const schoolName =
-    document.getElementById('schoolName')?.value.trim();
-
-  const schoolDiseCode =
-    digitsOnly(
-      document.getElementById('schoolDiseCode')?.value
-    );
-
-  const district =
-    document.getElementById('district')?.value.trim();
-
-  const block =
-    document.getElementById('block')?.value.trim();
-
-
-  const status =
-    document.getElementById('registerStatus');
-
-  const btn =
-    document.getElementById('registerBtn');
-
-
-  // सभी जानकारी जांचें
-
-  if (
-    !fullName ||
-    !mobile ||
-    !schoolName ||
-    !schoolDiseCode ||
-    !district ||
-    !block
-  ) {
-
-    alert('कृपया सभी जानकारी भरें।');
-
-    return;
-
+  if (!fullName || !mobile || !password || !schoolName || !schoolDiseCode || !district || !block) {
+    alert('कृपया सभी जानकारी भरें।'); return;
   }
-
-
-  // Mobile Number
-
   if (!/^\d{10}$/.test(mobile)) {
-
-    alert(
-      'कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें।'
-    );
-
-    return;
-
+    alert('कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें।'); return;
   }
-
-
-  // UDISE Code
-
+  if (!/^\d{6}$/.test(password)) {
+    alert('पासवर्ड केवल 6 अंकों का होना चाहिए।'); return;
+  }
   if (!/^\d{11}$/.test(schoolDiseCode)) {
-
-    alert(
-      'कृपया सही 11 अंकों का UDISE / DISE Code दर्ज करें।'
-    );
-
-    return;
-
+    alert('कृपया सही 11 अंकों का UDISE / DISE Code दर्ज करें।'); return;
   }
-
 
   try {
-
-    btn.disabled = true;
-
-    btn.textContent =
-      'पंजीकरण हो रहा है...';
-
-    status.textContent =
-      'कृपया प्रतीक्षा करें...';
-
-
-    // पहले जांचें कि मोबाइल नंबर पहले से मौजूद है या नहीं
-
-    const {
-      data: existing,
-      error: checkError
-    } = await supabaseClient
-      .from('teachers')
-      .select(
-        'teacher_id, full_name'
-      )
-      .eq('mobile', mobile)
-      .maybeSingle();
-
-
-    if (checkError) throw checkError;
-
-
-    if (existing) {
-
-      alert(
-
-        'इस मोबाइल नंबर से शिक्षक पहले से पंजीकृत हैं।\n\n' +
-
-        'Teacher ID: ' +
-
-        (
-          existing.teacher_id ||
-          'अभी उपलब्ध नहीं'
-        )
-
-      );
-
-
-      status.textContent =
-        'यह मोबाइल नंबर पहले से पंजीकृत है।';
-
-
-      return;
-
-    }
-
-
-    // नया Teacher Register करें
-    // Teacher ID अब Database Trigger से Automatic बनेगी
-
-    const {
-      data: inserted,
-      error: insertError
-    } = await supabaseClient
-      .from('teachers')
-      .insert({
-
-        full_name: fullName,
-
-        mobile: mobile,
-
-        school_name: schoolName,
-
-        school_dise_code: schoolDiseCode,
-
-        district: district,
-
-        block: block,
-
-        status: 'active'
-
-      })
-      .select(
-
-        'id, teacher_number, teacher_id, full_name, mobile, school_name, school_dise_code'
-
-      )
-      .single();
-
-
-    if (insertError) throw insertError;
-
-
-    // Database से बनी हुई Teacher ID
-
-    const teacherId =
-      inserted.teacher_id;
-
-
-    if (!teacherId) {
-
-      throw new Error(
-        'Teacher ID generate नहीं हुई।'
-      );
-
-    }
-
-
-    // Session Save करें
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_id',
-
-      teacherId
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_mobile',
-
-      inserted.mobile || mobile
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_dise_code',
-
-      inserted.school_dise_code ||
-      schoolDiseCode
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_name',
-
-      inserted.full_name ||
-      fullName
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_school',
-
-      inserted.school_name ||
-      schoolName
-
-    );
-
-
-    status.textContent =
-
-      '✅ पंजीकरण सफल हुआ। आपकी Teacher ID: ' +
-
-      teacherId;
-
-
-    alert(
-
-      '🎉 शिक्षक पंजीकरण सफल हुआ।\n\n' +
-
-      'आपकी Teacher ID:\n' +
-
-      teacherId +
-
-      '\n\nकृपया इसे सुरक्षित रखें।'
-
-    );
-
-
-    // Home Page पर जाएं
-
-    location.href = 'home.html';
-
-
-  } catch (error) {
-
-    console.error(
-      'Teacher Registration Error:',
-      error
-    );
-
-
-    status.textContent =
-      '❌ पंजीकरण नहीं हो सका।';
-
-
-    alert(
-
-      'पंजीकरण नहीं हो सका: ' +
-
-      (
-        error.message ||
-        'Unknown Error'
-      )
-
-    );
-
-
-  } finally {
-
-    btn.disabled = false;
-
-    btn.textContent =
-      'पंजीकरण करें';
-
-  }
-
-}
-
-
-
-/* =========================================
-   TEACHER LOGIN
-========================================= */
-
-async function teacherLogin() {
-
-  const teacherId =
-    document
-      .getElementById('teacherId')
-      ?.value
-      .trim()
-      .toUpperCase();
-
-
-  const mobile =
-    digitsOnly(
-      document.getElementById('mobile')?.value
-    );
-
-
-  const status =
-    document.getElementById('loginStatus');
-
-
-  const btn =
-    document.getElementById('loginBtn');
-
-
-  if (!teacherId || !mobile) {
-
-    alert(
-      'कृपया Teacher ID और मोबाइल नंबर दर्ज करें।'
-    );
-
-    return;
-
-  }
-
-
-  if (!/^\d{10}$/.test(mobile)) {
-
-    alert(
-      'कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें।'
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    btn.disabled = true;
-
-    btn.textContent =
-      'लॉगिन हो रहा है...';
-
-    status.textContent =
-      'कृपया प्रतीक्षा करें...';
-
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-
-      .from('teachers')
-
-      .select(
-
-        'teacher_id, full_name, mobile, school_name, school_dise_code, status'
-
-      )
-
-      .eq('teacher_id', teacherId)
-
-      .eq('mobile', mobile)
-
-      .maybeSingle();
-
+    btn.disabled = true; btn.textContent = 'पंजीकरण हो रहा है...';
+    status.textContent = 'कृपया प्रतीक्षा करें...';
+
+    const { data, error } = await supabaseClient.rpc('register_ganit_teacher', {
+      p_full_name: fullName,
+      p_mobile: mobile,
+      p_password: password,
+      p_school_name: schoolName,
+      p_school_dise_code: schoolDiseCode,
+      p_district: district,
+      p_block: block
+    });
 
     if (error) throw error;
+    const teacher = Array.isArray(data) ? data[0] : data;
+    if (!teacher?.teacher_id) throw new Error('Teacher ID generate नहीं हुई।');
 
-
-    if (!data) {
-
-      alert(
-        'Teacher ID या मोबाइल नंबर सही नहीं है।'
-      );
-
-
-      status.textContent =
-        '❌ जानकारी नहीं मिली।';
-
-
-      return;
-
-    }
-
-
-    if (
-      String(
-        data.status || 'active'
-      ).toLowerCase() !== 'active'
-    ) {
-
-      alert(
-        'आपका शिक्षक खाता अभी सक्रिय नहीं है।'
-      );
-
-
-      status.textContent =
-        '❌ खाता सक्रिय नहीं है।';
-
-
-      return;
-
-    }
-
-
-    // Teacher Session Save करें
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_id',
-
-      data.teacher_id || ''
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_mobile',
-
-      data.mobile || ''
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_dise_code',
-
-      data.school_dise_code || ''
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_name',
-
-      data.full_name || ''
-
-    );
-
-
-    sessionStorage.setItem(
-
-      'ganit_setu_teacher_school',
-
-      data.school_name || ''
-
-    );
-
-
-    status.textContent =
-      '✅ लॉगिन सफल।';
-
-
-    location.href =
-      'home.html';
-
-
+    saveTeacherSession(teacher);
+    status.textContent = '✅ पंजीकरण सफल। आपकी Teacher ID: ' + teacher.teacher_id;
+    alert('🎉 शिक्षक पंजीकरण सफल हुआ।\n\nआपकी Teacher ID:\n' + teacher.teacher_id + '\n\nकृपया इसे सुरक्षित रखें।');
+    location.href = 'home.html';
   } catch (error) {
-
-    console.error(
-      'Teacher Login Error:',
-      error
-    );
-
-
-    status.textContent =
-      '❌ लॉगिन नहीं हो सका。';
-
-
-    alert(
-
-      'लॉगिन नहीं हो सका: ' +
-
-      (
-        error.message ||
-        'Unknown Error'
-      )
-
-    );
-
-
+    console.error('Teacher Registration Error:', error);
+    status.textContent = '❌ पंजीकरण नहीं हो सका।';
+    alert('पंजीकरण नहीं हो सका: ' + (error.message || 'Unknown Error'));
   } finally {
-
-    btn.disabled = false;
-
-    btn.textContent =
-      'लॉगिन करें';
-
+    btn.disabled = false; btn.textContent = 'पंजीकरण करें';
   }
-
 }
 
+async function teacherLogin() {
+  const loginId = document.getElementById('loginId')?.value.trim().toUpperCase();
+  const password = digitsOnly(document.getElementById('password')?.value);
+  const status = document.getElementById('loginStatus');
+  const btn = document.getElementById('loginBtn');
 
-
-/* =========================================
-   PAGE LOAD
-========================================= */
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-
-    const registerBtn =
-      document.getElementById('registerBtn');
-
-
-    const loginBtn =
-      document.getElementById('loginBtn');
-
-
-    if (registerBtn) {
-
-      registerBtn.addEventListener(
-
-        'click',
-
-        registerTeacher
-
-      );
-
-    }
-
-
-    if (loginBtn) {
-
-      loginBtn.addEventListener(
-
-        'click',
-
-        teacherLogin
-
-      );
-
-    }
-
+  if (!loginId || !password) {
+    alert('कृपया Teacher ID / मोबाइल नंबर और पासवर्ड दर्ज करें।'); return;
   }
-);
+  if (!/^\d{6}$/.test(password)) {
+    alert('कृपया सही 6 अंकों का पासवर्ड दर्ज करें।'); return;
+  }
+
+  try {
+    btn.disabled = true; btn.textContent = 'लॉगिन हो रहा है...';
+    status.textContent = 'कृपया प्रतीक्षा करें...';
+
+    const { data, error } = await supabaseClient.rpc('login_ganit_teacher', {
+      p_login: loginId,
+      p_password: password
+    });
+
+    if (error) throw error;
+    const teacher = Array.isArray(data) ? data[0] : data;
+
+    if (!teacher) {
+      alert('Teacher ID / मोबाइल नंबर या पासवर्ड सही नहीं है।');
+      status.textContent = '❌ जानकारी सही नहीं है।'; return;
+    }
+
+    saveTeacherSession(teacher);
+    status.textContent = '✅ लॉगिन सफल।';
+    location.href = 'home.html';
+  } catch (error) {
+    console.error('Teacher Login Error:', error);
+    status.textContent = '❌ लॉगिन नहीं हो सका।';
+    alert('लॉगिन नहीं हो सका: ' + (error.message || 'Unknown Error'));
+  } finally {
+    btn.disabled = false; btn.textContent = 'लॉगिन करें';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('registerBtn')?.addEventListener('click', registerTeacher);
+  document.getElementById('loginBtn')?.addEventListener('click', teacherLogin);
+
+  document.getElementById('password')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') teacherLogin();
+  });
+  document.getElementById('teacherPassword')?.addEventListener('input', e => {
+    e.target.value = digitsOnly(e.target.value).slice(0, 6);
+  });
+});
