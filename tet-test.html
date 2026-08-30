@@ -1,34 +1,226 @@
 <!doctype html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>शिक्षक पात्रता परीक्षा टेस्ट | गणित सेतु</title>
+
 <link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+.selection-box{
+  max-width:650px;
+  margin:20px auto;
+  padding:25px;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.selection-box h2{
+  margin-top:0;
+}
+
+.selection-group{
+  margin:20px 0;
+}
+
+.selection-group label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.selection-group select{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+</style>
+
 </head>
+
 <body>
-<header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand">शिक्षक पात्रता परीक्षा</div></header>
+
+<header class="simple-header">
+
+<a href="tet.html">← वापस</a>
+
+<div class="mini-brand">
+शिक्षक पात्रता परीक्षा
+</div>
+
+</header>
+
+
 <main class="page narrow">
+
 <section class="panel test-panel">
- <div class="test-meta">
-  <span id="testType">अभ्यास टेस्ट</span><span id="setLabel">Set A</span>
-  <span id="testInfo">⏳ प्रश्न लोड हो रहे हैं...</span><span id="timer">⏱️ 00:00</span>
- </div>
- <div id="loadingBox">⏳ Supabase से Live Questions लोड हो रहे हैं...</div>
- <div id="testContent" style="display:none">
-  <h1 id="questionNumber">प्रश्न 1</h1>
-  <div class="question-box" id="questionText"></div>
-  <div class="options" id="options"></div>
-  <div class="test-nav">
-   <button class="outline-btn" id="prevBtn" type="button">← पिछला</button>
-   <button class="primary-btn" id="nextBtn" type="button">अगला प्रश्न →</button>
-  </div>
-  <div id="progressText" style="margin-top:12px"></div>
- </div>
- <div id="testMessage"></div>
+
+
+<!-- TEST META -->
+
+<div class="test-meta">
+
+<span id="testType">अभ्यास टेस्ट</span>
+
+<span id="setLabel">Set A</span>
+
+<span id="testInfo">⏳ टेस्ट तैयार हो रहा है...</span>
+
+<span id="timer">⏱️ 00:00</span>
+
+</div>
+
+
+
+<!-- SECONDARY SELECTION -->
+
+<div id="secondarySelection" style="display:none">
+
+<div class="selection-box">
+
+<h2>📝 टेस्ट विकल्प चुनें</h2>
+
+<div class="selection-group">
+
+<label for="language1">
+भाषा-1 चुनें
+</label>
+
+<select id="language1">
+
+<option value="">-- भाषा चुनें --</option>
+
+<option value="hindi">हिंदी</option>
+
+<option value="sanskrit">संस्कृत</option>
+
+</select>
+
+</div>
+
+
+<div class="selection-group">
+
+<label for="subject">
+विषय चुनें
+</label>
+
+<select id="subject">
+
+<option value="">-- विषय चुनें --</option>
+
+<option value="mathematics">गणित</option>
+
+</select>
+
+</div>
+
+
+<button
+class="primary-btn"
+id="startSecondaryBtn"
+type="button">
+
+टेस्ट शुरू करें →
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- LOADING -->
+
+<div id="loadingBox">
+
+⏳ Supabase से Live Questions लोड हो रहे हैं...
+
+</div>
+
+
+
+<!-- TEST CONTENT -->
+
+<div id="testContent" style="display:none">
+
+<h1 id="questionNumber">
+
+प्रश्न 1
+
+</h1>
+
+
+<div
+class="question-box"
+id="questionText">
+
+</div>
+
+
+<div
+class="options"
+id="options">
+
+</div>
+
+
+<div class="test-nav">
+
+<button
+class="outline-btn"
+id="prevBtn"
+type="button">
+
+← पिछला
+
+</button>
+
+
+<button
+class="primary-btn"
+id="nextBtn"
+type="button">
+
+अगला प्रश्न →
+
+</button>
+
+</div>
+
+
+<div
+id="progressText"
+style="margin-top:12px">
+
+</div>
+
+</div>
+
+
+
+<div id="testMessage"></div>
+
+
 </section>
+
 </main>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="assets/js/ui.js"></script>
+
 <script src="assets/js/supabase.js"></script>
-<script src="assets/js/tet.js?v=20260830-primary-language2-150"></script>
-</body></html>
+
+<script src="assets/js/tet.js?v=20260831-secondary-selection-150"></script>
+
+</body>
+</html>
