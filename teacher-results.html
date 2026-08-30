@@ -4,18 +4,40 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>मेरा परिणाम | गणित सेतु</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+.result-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.result-summary .stat{padding:14px;border:1px solid #eee;border-radius:12px;text-align:center}
+.result-card{border:1px solid #e9e9e9;border-radius:12px;padding:16px;margin:12px 0;background:#fff}
+.result-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.result-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.result-meta div{padding:10px;border-radius:9px;background:#fafafa;text-align:center}
+.muted-small{font-size:12px;opacity:.7}
+@media(max-width:700px){.result-summary,.result-meta{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
 <header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand">📊 मेरा परिणाम</div></header>
 <main class="page narrow">
 <section class="panel">
- <h1>मेरे टेस्ट परिणाम</h1>
- <p class="muted">आपके द्वारा दिए गए सभी पात्रता परीक्षा टेस्ट तारीखवार यहाँ दिखाई देंगे।</p>
- <div class="empty-results">
-   <span>📋</span>
-   <h2>अभी कोई परिणाम उपलब्ध नहीं है</h2>
-   <p>टेस्ट पूरा करने के बाद आपका स्कोर और परिणाम यहाँ तारीखवार दिखाई देगा।</p>
+ <div class="section-head">
+  <div><h1>मेरे टेस्ट परिणाम</h1><p class="muted">आपके द्वारा दिए गए सभी पात्रता परीक्षा टेस्ट तारीखवार यहाँ दिखाई देंगे।</p></div>
+  <button class="outline-btn" id="refreshResults" type="button">🔄 Refresh</button>
+ </div>
+
+ <div class="result-summary">
+   <div class="stat"><small>कुल टेस्ट</small><b id="totalAttempts">0</b></div>
+   <div class="stat"><small>औसत प्रतिशत</small><b id="averagePercentage">0%</b></div>
+   <div class="stat"><small>सर्वश्रेष्ठ प्रतिशत</small><b id="bestPercentage">0%</b></div>
+   <div class="stat"><small>कुल सही उत्तर</small><b id="totalCorrect">0</b></div>
+ </div>
+
+ <div id="resultsList">
+   <div class="empty-results"><span>⏳</span><h2>परिणाम लोड हो रहे हैं...</h2></div>
  </div>
 </section>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/teacher-results.js?v=20260830-live1"></script>
 </body></html>
