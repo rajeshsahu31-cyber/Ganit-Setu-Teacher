@@ -1,59 +1,71 @@
-<!doctype html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>टेस्ट सेट | गणित सेतु</title>
-<link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-<header class="simple-header"><a href="tet.html">← वापस</a><div class="mini-brand" id="pageTitle">शिक्षक पात्रता परीक्षा</div></header>
-<main class="page">
-<section class="panel">
- <h1 id="examTitle">अभ्यास टेस्ट</h1>
- <p class="muted" id="patternInfo">अपना Set चुनें।</p>
- <div class="set-grid">
-   <a id="setA" class="set-card"><span>🅰️</span><h2>Set A</h2><p class="setPattern">पैटर्न लोड हो रहा है...</p><b>टेस्ट शुरू करें →</b></a>
-   <a id="setB" class="set-card"><span>🅱️</span><h2>Set B</h2><p class="setPattern">पैटर्न लोड हो रहा है...</p><b>टेस्ट शुरू करें →</b></a>
-   <a id="setC" class="set-card"><span>🅲</span><h2>Set C</h2><p class="setPattern">पैटर्न लोड हो रहा है...</p><b>टेस्ट शुरू करें →</b></a>
- </div>
- <div class="result-entry">
-   <div><span>📊</span><div><h2>मेरा परिणाम</h2><p>अपने सभी दिए गए टेस्ट का तारीखवार परिणाम देखें</p></div></div>
-   <a class="outline-inline" href="teacher-results.html">परिणाम देखें →</a>
- </div>
-</section>
-</main>
 <script>
-const p=new URLSearchParams(location.search);
-const type=p.get('type')==='secondary'?'secondary':'primary';
-const hindi=type==='secondary'?'माध्यमिक शिक्षक पात्रता परीक्षा':'प्राथमिक शिक्षक पात्रता परीक्षा';
-document.getElementById('pageTitle').textContent=hindi;
-document.getElementById('examTitle').textContent=hindi;
-const info=type==='primary'
- ? 'प्रत्येक Set में 150 प्रश्न • 150 अंक • 5 भाग • प्रत्येक भाग में 30 प्रश्न'
- : 'अपना Set चुनें। प्रत्येक Set का मौजूदा माध्यमिक शिक्षक पैटर्न यथावत रहेगा।';
-document.getElementById('patternInfo').textContent=info;
-document.querySelectorAll('.setPattern').forEach(el=>{
- el.textContent=type==='primary'?'5 भाग • प्रत्येक भाग में 30 प्रश्न':'मौजूदा परीक्षा पैटर्न';
-});
-['A','B','C'].forEach(set=>{
- const a=document.getElementById('set'+set);
- if(type==='primary'){
-   a.href='#';
-   a.addEventListener('click',e=>{
-     e.preventDefault();
-     const lang=prompt('भाषा-2 चुनें:
-1 = English
-2 = संस्कृत
+const p = new URLSearchParams(location.search);
 
-1 या 2 लिखें');
-     if(lang==='1') location.href=`tet-test.html?type=primary&set=${set}&lang=english`;
-     else if(lang==='2') location.href=`tet-test.html?type=primary&set=${set}&lang=sanskrit`;
-     else if(lang!==null) alert('कृपया केवल 1 या 2 चुनें।');
-   });
- }else{
-   a.href=`tet-test.html?type=${type}&set=${set}`;
- }
+const type = p.get('type') === 'secondary'
+  ? 'secondary'
+  : 'primary';
+
+const hindi = type === 'secondary'
+  ? 'माध्यमिक शिक्षक पात्रता परीक्षा'
+  : 'प्राथमिक शिक्षक पात्रता परीक्षा';
+
+document.getElementById('pageTitle').textContent = hindi;
+document.getElementById('examTitle').textContent = hindi;
+
+const info = type === 'primary'
+  ? 'प्रत्येक Set में 150 प्रश्न • 150 अंक • 5 भाग • प्रत्येक भाग में 30 प्रश्न'
+  : 'अपना Set चुनें। प्रत्येक Set का मौजूदा माध्यमिक शिक्षक पैटर्न यथावत रहेगा।';
+
+document.getElementById('patternInfo').textContent = info;
+
+document.querySelectorAll('.setPattern').forEach(el => {
+  el.textContent = type === 'primary'
+    ? '5 भाग • प्रत्येक भाग में 30 प्रश्न'
+    : 'मौजूदा परीक्षा पैटर्न';
+});
+
+['A', 'B', 'C'].forEach(set => {
+
+  const a = document.getElementById('set' + set);
+
+  if (type === 'primary') {
+
+    a.href = '#';
+
+    a.addEventListener('click', function(e) {
+
+      e.preventDefault();
+
+      const lang = prompt(
+        'भाषा-2 चुनें:\n\n' +
+        '1 = English\n' +
+        '2 = संस्कृत\n\n' +
+        '1 या 2 लिखें'
+      );
+
+      if (lang === '1') {
+
+        location.href =
+          `tet-test.html?type=primary&set=${set}&lang=english`;
+
+      } else if (lang === '2') {
+
+        location.href =
+          `tet-test.html?type=primary&set=${set}&lang=sanskrit`;
+
+      } else if (lang !== null) {
+
+        alert('कृपया केवल 1 या 2 चुनें।');
+
+      }
+
+    });
+
+  } else {
+
+    a.href = `tet-test.html?type=${type}&set=${set}`;
+
+  }
+
 });
 </script>
-<script src="assets/js/ui.js"></script>
-</body></html>
