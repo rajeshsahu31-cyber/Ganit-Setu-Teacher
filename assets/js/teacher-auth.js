@@ -11,13 +11,13 @@ function saveTeacherSession(data) {
 }
 
 async function registerTeacher() {
-  const fullName = document.getElementById('fullName')?.value.trim();
+  const fullName = document.getElementById('fullName')?.value.trim().toUpperCase();
   const mobile = digitsOnly(document.getElementById('mobile')?.value);
   const password = digitsOnly(document.getElementById('teacherPassword')?.value);
-  const schoolName = document.getElementById('schoolName')?.value.trim();
+  const schoolName = document.getElementById('schoolName')?.value.trim().toUpperCase();
   const schoolDiseCode = digitsOnly(document.getElementById('schoolDiseCode')?.value);
-  const district = document.getElementById('district')?.value.trim();
-  const block = document.getElementById('block')?.value.trim();
+  const district = document.getElementById('district')?.value.trim().toUpperCase();
+  const block = document.getElementById('block')?.value.trim().toUpperCase();
   const status = document.getElementById('registerStatus');
   const btn = document.getElementById('registerBtn');
 
@@ -116,5 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('teacherPassword')?.addEventListener('input', e => {
     e.target.value = digitsOnly(e.target.value).slice(0, 6);
+  });
+
+  // Registration form: all letter input is automatically CAPITAL/UPPERCASE.
+  ['fullName','schoolName','district','block'].forEach(id => {
+    const input = document.getElementById(id);
+    if (!input) return;
+    input.addEventListener('input', () => {
+      input.value = input.value.toUpperCase();
+    });
   });
 });
