@@ -1,6 +1,7 @@
 const params=new URLSearchParams(location.search);
 const examType=(params.get('type')||'primary').toLowerCase();
 const testSet=(params.get('set')||'A').toUpperCase();
+const language2=(params.get('lang')||'').toLowerCase();
 
 let questions=[], answers={}, current=0, elapsed=0, timerId=null;
 
@@ -46,14 +47,17 @@ function tick(){
    depend on teacher_tests or teacher_attempts.
 ===================================================== */
 async function loadQuestions(){
- $('testType').textContent=examType==='secondary'
-   ?'माध्यमिक शिक्षक अभ्यास टेस्ट'
-   :'प्राथमिक शिक्षक अभ्यास टेस्ट';
+ const isPrimary=examType==='primary';
+ $('testType').textContent=isPrimary?'प्राथमिक शिक्षक पात्रता परीक्षा':'माध्यमिक शिक्षक अभ्यास टेस्ट';
+ $('setLabel').textContent='Set '+testSet+(isPrimary?` • भाषा-2: ${language2==='sanskrit'?'संस्कृत':'English'}`:'');
 
- $('setLabel').textContent='Set '+testSet;
+ if(isPrimary && !['english','sanskrit'].includes(language2)){
+   $('loadingBox').innerHTML='⚠️ पहले भाषा-2 चुनें: English या संस्कृत।';
+   return;
+ }
 
  try{
-   let {data,error}=await supabaseClient
+   const {data,error}=await supabaseClient
     .from('teacher_questions')
     .select('*')
     .eq('exam_type',examType)
@@ -63,27 +67,50 @@ async function loadQuestions(){
     .order('created_at',{ascending:true});
 
    if(error) throw error;
+   let rows=data||[];
 
-   // Original fallback: if a Set has no exact questions, show
-   // active questions of the selected Primary/Secondary exam.
-   if(!data || !data.length){
-     const fallback=await supabaseClient
-      .from('teacher_questions')
-      .select('*')
-      .eq('exam_type',examType)
-      .eq('is_active',true)
-      .order('section_number',{ascending:true})
-      .order('created_at',{ascending:true});
+   if(isPrimary){
+     // Sections 1,2,4,5 are common. Section 3 depends on Language-2.
+     rows=rows.filter(q=>{
+       if(Number(q.section_number)===3) return String(q.language_option||'').toLowerCase()===language2;
+       return !q.language_option || String(q.language_option).toLowerCase()==='common';
+     });
 
-     if(fallback.error) throw fallback.error;
-     data=fallback.data||[];
+     const counts={1:0,2:0,3:0,4:0,5:0};
+     rows.forEach(q=>{ if(counts[q.section_number]!==undefined) counts[q.section_number]++; });
+     const bad=Object.entries(counts).filter(([,n])=>n!==30);
+
+     if(bad.length){
+       $('loadingBox').innerHTML=`📭 Set ${esc(testSet)} अभी तैयार नहीं है। प्रत्येक भाग में 30 प्रश्न आवश्यक हैं। वर्तमान स्थिति: `+
+         `भाग 1: ${counts[1]}, भाग 2: ${counts[2]}, भाग 3: ${counts[3]}, भाग 4: ${counts[4]}, भाग 5: ${counts[5]}.`;
+       return;
+     }
+
+     // Exactly 150 questions only.
+     questions=rows.slice(0,150);
+     if(questions.length!==150){
+       $('loadingBox').innerHTML='⚠️ Primary CBT के लिए ठीक 150 प्रश्न आवश्यक हैं।';
+       return;
+     }
+   }else{
+     // Preserve the existing Secondary flow, including its old fallback behavior.
+     if(!rows.length){
+       const fallback=await supabaseClient
+        .from('teacher_questions')
+        .select('*')
+        .eq('exam_type',examType)
+        .eq('is_active',true)
+        .order('section_number',{ascending:true})
+        .order('created_at',{ascending:true});
+       if(fallback.error) throw fallback.error;
+       rows=fallback.data||[];
+     }
+     questions=rows;
    }
 
-   questions=data||[];
    $('testInfo').textContent=`CBT • ${questions.length} प्रश्न • Live Test`;
-
    if(!questions.length){
-     $('loadingBox').innerHTML='📭 इस Primary/Secondary और Set के लिए अभी कोई Live Question उपलब्ध नहीं है। पहले Admin Panel से Question जोड़ें।';
+     $('loadingBox').innerHTML='📭 इस परीक्षा और Set के लिए अभी कोई Live Question उपलब्ध नहीं है।';
      return;
    }
 
@@ -91,7 +118,6 @@ async function loadQuestions(){
    $('testContent').style.display='block';
    renderQuestion();
    timerId=setInterval(tick,1000);
-
  }catch(e){
    console.error('Question loading error:',e);
    $('loadingBox').innerHTML=`❌ Questions load नहीं हो सके: ${esc(e.message||'Unknown error')}`;
