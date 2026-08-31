@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Premium Test | गणित सेतु</title>
+
 <link rel="stylesheet" href="assets/css/style.css">
+
 <style>
 .premium-box{text-align:center;padding:32px 20px}.premium-icon{font-size:58px;margin-bottom:12px}
 .premium-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
@@ -18,281 +20,580 @@
 .coupon-status{margin-top:10px;font-size:14px;min-height:20px}.final-price{margin-top:16px;padding-top:14px;border-top:1px dashed #bbb;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:18px;font-weight:800}
 .pay-btn{min-width:220px}.payment-note{margin-top:14px;font-size:13px;line-height:1.6;color:#666}
 </style>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
+
 <body>
-<header class="simple-header"><a id="backLink" href="tet.html">← वापस</a><div class="mini-brand">🔒 Premium Test</div></header>
-<main class="page narrow"><section class="panel premium-box">
+
+<header class="simple-header">
+<a id="backLink" href="tet.html">← वापस</a>
+<div class="mini-brand">🔒 Premium Test</div>
+</header>
+
+<main class="page narrow">
+<section class="panel premium-box">
+
 <div class="premium-icon">🔒</div>
+
 <h1 id="title">Premium Set</h1>
-<p class="muted" id="subtitle">यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध है।</p>
+
+<p class="muted" id="subtitle">
+यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध है।
+</p>
 
 <div class="premium-plan">
-<div class="plan-head"><div><h2 style="margin:0">🎓 Premium Access Plan</h2><p id="planText" class="muted" style="margin:8px 0 0">Set B + Set C दोनों Premium अभ्यास सेट</p></div>
-<div class="plan-price"><div class="old-price">₹499</div><div class="main-price" id="displayPrice">₹499</div></div></div>
-<div class="premium-info" style="margin-top:18px"><b>इस Premium Plan में शामिल:</b><br>✅ Set B Premium Access<br>✅ Set C Premium Access<br>✅ संबंधित परीक्षा के दोनों Premium Sets<br>🔓 सफल भुगतान के बाद Premium Access सक्रिय किया जाएगा</div>
+
+<div class="plan-head">
+
+<div>
+<h2 style="margin:0">🎓 Premium Access Plan</h2>
+<p id="planText" class="muted" style="margin:8px 0 0">
+Set B + Set C दोनों Premium अभ्यास सेट
+</p>
+</div>
+
+<div class="plan-price">
+<div class="old-price">₹499</div>
+<div class="main-price" id="displayPrice">₹499</div>
+</div>
+
+</div>
+
+<div class="premium-info" style="margin-top:18px">
+<b>इस Premium Plan में शामिल:</b><br>
+✅ Set B Premium Access<br>
+✅ Set C Premium Access<br>
+✅ संबंधित परीक्षा के दोनों Premium Sets<br>
+🔓 सफल भुगतान के बाद Premium Access सक्रिय किया जाएगा
+</div>
+
 </div>
 
 <div class="offer-box">
+
 <label for="couponCode">🎟️ Coupon / Offer Code</label>
-<div class="coupon-row"><input type="text" id="couponCode" placeholder="Coupon Code डालें" autocomplete="off"><button type="button" class="outline-btn" id="applyCouponBtn">Apply</button></div>
+
+<div class="coupon-row">
+
+<input
+type="text"
+id="couponCode"
+placeholder="Coupon Code डालें"
+autocomplete="off"
+>
+
+<button
+type="button"
+class="outline-btn"
+id="applyCouponBtn"
+>
+Apply
+</button>
+
+</div>
+
 <div class="coupon-status" id="couponStatus"></div>
-<div class="final-price"><span>💳 भुगतान राशि</span><span id="finalPrice">₹499</span></div>
-<div class="payment-note">ℹ️ Coupon validation और final payment amount को secure backend से verify किया जाएगा। Frontend में दिखाई गई राशि final authority नहीं है।</div>
+
+<div class="final-price">
+<span>💳 भुगतान राशि</span>
+<span id="finalPrice">₹499</span>
+</div>
+
+<div class="payment-note">
+ℹ️ Coupon validation और final payment amount को secure backend से verify किया जाएगा। Frontend में दिखाई गई राशि final authority नहीं है।
+</div>
+
 </div>
 
 <div class="premium-actions">
-<button type="button" class="primary-btn pay-btn" id="payNowBtn">💳 Premium लें</button>
-<a class="outline-btn" id="freeSetLink" href="#">🆓 Free Set A पर जाएँ</a>
-<a class="outline-btn" id="backSetLink" href="#">← Set Selection</a>
+
+<button
+type="button"
+class="primary-btn pay-btn"
+id="payNowBtn"
+>
+💳 Premium लें
+</button>
+
+<a class="outline-btn" id="freeSetLink" href="#">
+🆓 Free Set A पर जाएँ
+</a>
+
+<a class="outline-btn" id="backSetLink" href="#">
+← Set Selection
+</a>
+
 </div>
+
 <div class="payment-note" id="paymentMessage"></div>
-</section></main>
+
+</section>
+</main>
+
 
 <script>
-const p=new URLSearchParams(location.search);
-const type=p.get('type')==='secondary'?'secondary':'primary';
-const set=(p.get('set')||'B').toUpperCase();
-const exam=type==='secondary'?'माध्यमिक शिक्षक पात्रता परीक्षा':'प्राथमिक शिक्षक पात्रता परीक्षा';
 
-document.getElementById('title').textContent=`${exam} • Premium Access`;
-document.getElementById('subtitle').textContent=`₹499 में Set B और Set C दोनों Premium अभ्यास सेट उपलब्ध होंगे।`;
-document.getElementById('planText').textContent=`${exam} के लिए Set B + Set C दोनों Premium अभ्यास सेट`;
-document.getElementById('backLink').href=`tet-sets.html?type=${type}`;
-document.getElementById('backSetLink').href=`tet-sets.html?type=${type}`;
+/* =====================================
+URL PARAMETERS
+===================================== */
+
+const p=new URLSearchParams(location.search);
+
+const type=
+p.get('type')==='secondary'
+?'secondary'
+:'primary';
+
+const set=(p.get('set')||'B').toUpperCase();
+
+const exam=
+type==='secondary'
+?'माध्यमिक शिक्षक पात्रता परीक्षा'
+:'प्राथमिक शिक्षक पात्रता परीक्षा';
+
+
+/* =====================================
+PAGE TEXT
+===================================== */
+
+document.getElementById('title').textContent=
+`${exam} • Premium Access`;
+
+document.getElementById('subtitle').textContent=
+`₹499 में Set B और Set C दोनों Premium अभ्यास सेट उपलब्ध होंगे।`;
+
+document.getElementById('planText').textContent=
+`${exam} के लिए Set B + Set C दोनों Premium अभ्यास सेट`;
+
+document.getElementById('backLink').href=
+`tet-sets.html?type=${type}`;
+
+document.getElementById('backSetLink').href=
+`tet-sets.html?type=${type}`;
+
+
+/* =====================================
+OWNER ACCESS
+===================================== */
 
 const ownerTeacherIds=['GS-T-0004'];
-const currentTeacherId=String(sessionStorage.getItem('ganit_setu_teacher_id')||localStorage.getItem('ganit_setu_teacher_id')||'').trim().toUpperCase();
+
+const currentTeacherId=String(
+sessionStorage.getItem('ganit_setu_teacher_id')||
+localStorage.getItem('ganit_setu_teacher_id')||
+''
+).trim().toUpperCase();
+
 
 if(ownerTeacherIds.includes(currentTeacherId)){
- document.getElementById('paymentMessage').innerHTML='👑 <b>Owner Access Active:</b> आपके लिए Premium Sets पहले से उपलब्ध हैं।';
- document.getElementById('payNowBtn').style.display='none';
+
+document.getElementById('paymentMessage').innerHTML=
+'👑 <b>Owner Access Active:</b> आपके लिए Premium Sets पहले से उपलब्ध हैं।';
+
+document.getElementById('payNowBtn').style.display='none';
+
 }
+
+
+/* =====================================
+FREE SET
+===================================== */
 
 const free=document.getElementById('freeSetLink');
-free.href=type==='primary'?`tet-sets.html?type=primary`:`tet-test.html?type=secondary&set=A`;
+
+free.href=
+type==='primary'
+?`tet-sets.html?type=primary`
+:`tet-test.html?type=secondary&set=A`;
+
+
+/* =====================================
+PRICE
+===================================== */
 
 const BASE_PRICE=499;
+
 function updatePriceUI(amount){
- const safeAmount=Math.max(0,Number(amount)||BASE_PRICE);
- const formatted='₹'+safeAmount.toFixed(2).replace(/\.00$/,'');
- document.getElementById('finalPrice').textContent=formatted;
- document.getElementById('displayPrice').textContent=formatted;
+
+const safeAmount=Math.max(
+0,
+Number(amount)||BASE_PRICE
+);
+
+const formatted=
+'₹'+safeAmount.toFixed(2).replace(/\.00$/,'');
+
+document.getElementById('finalPrice').textContent=
+formatted;
+
+document.getElementById('displayPrice').textContent=
+formatted;
+
 }
+
 updatePriceUI(BASE_PRICE);
 
-document.getElementById('applyCouponBtn').addEventListener('click',function(){
- const code=document.getElementById('couponCode').value.trim().toUpperCase();
- const status=document.getElementById('couponStatus');
- if(!code){status.textContent='⚠️ कृपया Coupon Code डालें।';updatePriceUI(BASE_PRICE);return;}
- status.textContent='⏳ Coupon Code दर्ज हो गया है। Final validation secure payment process में होगी।';
- updatePriceUI(BASE_PRICE);
-});
 
-const SUPABASE_FUNCTION_BASE =
-  'https://cbgojvnbkosdehvwerth.supabase.co/functions/v1';
+/* =====================================
+COUPON
+===================================== */
 
-const CREATE_ORDER_URL =
-  `${SUPABASE_FUNCTION_BASE}/create-razorpay-order`;
+document.getElementById('applyCouponBtn')
+.addEventListener('click',function(){
 
-const VERIFY_PAYMENT_URL =
-  `${SUPABASE_FUNCTION_BASE}/verify-razorpay-payment`;
+const code=document.getElementById('couponCode')
+.value.trim().toUpperCase();
 
-const paymentMessage =
-  document.getElementById('paymentMessage');
+const status=document.getElementById('couponStatus');
 
-const payNowBtn =
-  document.getElementById('payNowBtn');
+if(!code){
 
-function showPaymentMessage(message) {
-  paymentMessage.innerHTML = message;
+status.textContent=
+'⚠️ कृपया Coupon Code डालें।';
+
+updatePriceUI(BASE_PRICE);
+
+return;
+
 }
 
-payNowBtn.addEventListener('click', async function () {
+status.textContent=
+'⏳ Coupon Code दर्ज हो गया है। Final validation secure payment process में होगी।';
 
-  if (ownerTeacherIds.includes(currentTeacherId)) return;
-
-  if (!currentTeacherId) {
-    showPaymentMessage(
-      '⚠️ <b>Teacher Login नहीं मिला।</b> कृपया पहले Login करें।'
-    );
-    return;
-  }
-
-  try {
-
-    // Double click रोकें
-    payNowBtn.disabled = true;
-    payNowBtn.textContent = '⏳ कृपया प्रतीक्षा करें...';
-
-    showPaymentMessage(
-      '🔐 सुरक्षित Payment Order बनाया जा रहा है...'
-    );
-
-    // STEP 1: Supabase Edge Function से Razorpay Order बनाएं
-    const orderResponse = await fetch(
-      CREATE_ORDER_URL,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          teacher_id: currentTeacherId,
-          exam_type: type
-        })
-      }
-    );
-
-    const orderData = await orderResponse.json();
-
-    if (!orderResponse.ok || !orderData.success) {
-      throw new Error(
-        orderData.error ||
-        'Payment Order बनाने में समस्या हुई।'
-      );
-    }
-
-    if (!window.Razorpay) {
-      throw new Error(
-        'Razorpay Checkout load नहीं हुआ। कृपया page refresh करें।'
-      );
-    }
-
-    // STEP 2: Razorpay Checkout खोलें
-    const options = {
-      key: orderData.key_id,
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: 'गणित सेतु',
-      description: `${exam} Premium Access - Set B + Set C`,
-      order_id: orderData.order_id,
-
-      handler: async function (response) {
-        try {
-          showPaymentMessage(
-            '🔐 Payment verify किया जा रहा है...'
-          );
-
-          // STEP 3: Server पर Razorpay Payment verify करें
-          const verifyResponse = await fetch(
-            VERIFY_PAYMENT_URL,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              })
-            }
-          );
-
-          const verifyData = await verifyResponse.json();
-
-          if (!verifyResponse.ok || !verifyData.success) {
-            throw new Error(
-              verifyData.error ||
-              'Payment verification failed.'
-            );
-          }
-
-          showPaymentMessage(
-            '🎉 <b>Payment सफल!</b><br>' +
-            '✅ आपका Premium Access सक्रिय कर दिया गया है।<br>' +
-            '🔓 Set B और Set C अब उपलब्ध हैं।'
-          );
-
-          payNowBtn.textContent = '✅ Premium Active';
-          payNowBtn.disabled = true;
-
-          setTimeout(function () {
-            window.location.href =
-              `tet-sets.html?type=${type}`;
-          }, 2500);
-
-        } catch (error) {
-          console.error(
-            'Payment verification error:',
-            error
-          );
-
-          showPaymentMessage(
-            '⚠️ <b>Payment हुआ, लेकिन verification में समस्या आई:</b><br>' +
-            (error.message ||
-              'कृपया support से संपर्क करें।')
-          );
-
-          payNowBtn.disabled = false;
-          payNowBtn.textContent = '💳 Premium लें';
-        }
-      },
-
-      modal: {
-        ondismiss: function () {
-          payNowBtn.disabled = false;
-          payNowBtn.textContent = '💳 Premium लें';
-
-          showPaymentMessage(
-            'ℹ️ Payment window बंद कर दी गई। कोई payment पूरा नहीं हुआ।'
-          );
-        }
-      },
-
-      theme: {
-        color: '#2563eb'
-      }
-    };
-
-    const razorpay = new Razorpay(options);
-
-    razorpay.on(
-      'payment.failed',
-      function (response) {
-
-        console.error(
-          'Razorpay payment failed:',
-          response.error
-        );
-
-        payNowBtn.disabled = false;
-        payNowBtn.textContent = '💳 Premium लें';
-
-        showPaymentMessage(
-          '❌ <b>Payment सफल नहीं हुआ।</b><br>' +
-          (
-            response.error?.description ||
-            'कृपया दोबारा प्रयास करें।'
-          )
-        );
-      }
-    );
-
-    razorpay.open();
-
-  } catch (error) {
-
-    console.error(
-      'Create payment order error:',
-      error
-    );
-
-    showPaymentMessage(
-      '⚠️ <b>Payment शुरू नहीं हो सका:</b><br>' +
-      (
-        error.message ||
-        'कृपया बाद में दोबारा प्रयास करें।'
-      )
-    );
-
-    payNowBtn.disabled = false;
-    payNowBtn.textContent = '💳 Premium लें';
-  }
+updatePriceUI(BASE_PRICE);
 
 });
+
+
+/* =====================================
+SUPABASE CONFIG
+===================================== */
+
+const SUPABASE_URL=
+'https://cbgojvnbkosdehvwerth.supabase.co';
+
+const SUPABASE_ANON_KEY=
+'sb_publishable_a5XOePzNSNn72WQm_xrIAQ_cj5Z01W_';
+
+
+const SUPABASE_FUNCTION_BASE=
+`${SUPABASE_URL}/functions/v1`;
+
+const CREATE_ORDER_URL=
+`${SUPABASE_FUNCTION_BASE}/create-razorpay-order`;
+
+const VERIFY_PAYMENT_URL=
+`${SUPABASE_FUNCTION_BASE}/verify-razorpay-payment`;
+
+
+/* =====================================
+PAYMENT ELEMENTS
+===================================== */
+
+const paymentMessage=
+document.getElementById('paymentMessage');
+
+const payNowBtn=
+document.getElementById('payNowBtn');
+
+function showPaymentMessage(message){
+
+paymentMessage.innerHTML=message;
+
+}
+
+
+/* =====================================
+PAY NOW
+===================================== */
+
+payNowBtn.addEventListener(
+'click',
+async function(){
+
+if(ownerTeacherIds.includes(currentTeacherId)) return;
+
+
+if(!currentTeacherId){
+
+showPaymentMessage(
+'⚠️ <b>Teacher Login नहीं मिला।</b> कृपया पहले Login करें।'
+);
+
+return;
+
+}
+
+
+try{
+
+payNowBtn.disabled=true;
+
+payNowBtn.textContent=
+'⏳ कृपया प्रतीक्षा करें...';
+
+showPaymentMessage(
+'🔐 सुरक्षित Payment Order बनाया जा रहा है...'
+);
+
+
+/* CREATE RAZORPAY ORDER */
+
+const orderResponse=await fetch(
+CREATE_ORDER_URL,
+{
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json',
+'apikey':SUPABASE_ANON_KEY,
+'Authorization':`Bearer ${SUPABASE_ANON_KEY}`
+},
+
+body:JSON.stringify({
+
+teacher_id:currentTeacherId,
+
+exam_type:type
+
+})
+
+}
+);
+
+
+const orderData=
+await orderResponse.json();
+
+
+if(!orderResponse.ok||!orderData.success){
+
+throw new Error(
+orderData.error||
+'Payment Order बनाने में समस्या हुई।'
+);
+
+}
+
+
+if(!window.Razorpay){
+
+throw new Error(
+'Razorpay Checkout load नहीं हुआ। कृपया page refresh करें।'
+);
+
+}
+
+
+/* OPEN RAZORPAY */
+
+const options={
+
+key:orderData.key_id,
+
+amount:orderData.amount,
+
+currency:orderData.currency,
+
+name:'गणित सेतु',
+
+description:
+`${exam} Premium Access - Set B + Set C`,
+
+order_id:orderData.order_id,
+
+
+/* PAYMENT SUCCESS */
+
+handler:async function(response){
+
+try{
+
+showPaymentMessage(
+'🔐 Payment verify किया जा रहा है...'
+);
+
+
+const verifyResponse=await fetch(
+VERIFY_PAYMENT_URL,
+{
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json',
+'apikey':SUPABASE_ANON_KEY,
+'Authorization':`Bearer ${SUPABASE_ANON_KEY}`
+},
+
+body:JSON.stringify({
+
+razorpay_order_id:
+response.razorpay_order_id,
+
+razorpay_payment_id:
+response.razorpay_payment_id,
+
+razorpay_signature:
+response.razorpay_signature
+
+})
+
+}
+);
+
+
+const verifyData=
+await verifyResponse.json();
+
+
+if(!verifyResponse.ok||!verifyData.success){
+
+throw new Error(
+verifyData.error||
+'Payment verification failed.'
+);
+
+}
+
+
+showPaymentMessage(
+'🎉 <b>Payment सफल!</b><br>'+
+'✅ आपका Premium Access सक्रिय कर दिया गया है।<br>'+
+'🔓 Set B और Set C अब उपलब्ध हैं।'
+);
+
+
+payNowBtn.textContent=
+'✅ Premium Active';
+
+payNowBtn.disabled=true;
+
+
+setTimeout(function(){
+
+window.location.href=
+`tet-sets.html?type=${type}`;
+
+},2500);
+
+
+}catch(error){
+
+console.error(
+'Payment verification error:',
+error
+);
+
+showPaymentMessage(
+'⚠️ <b>Payment हुआ, लेकिन verification में समस्या आई:</b><br>'+
+(error.message||
+'कृपया support से संपर्क करें।')
+);
+
+payNowBtn.disabled=false;
+
+payNowBtn.textContent=
+'💳 Premium लें';
+
+}
+
+},
+
+
+/* PAYMENT WINDOW CLOSE */
+
+modal:{
+
+ondismiss:function(){
+
+payNowBtn.disabled=false;
+
+payNowBtn.textContent=
+'💳 Premium लें';
+
+showPaymentMessage(
+'ℹ️ Payment window बंद कर दी गई। कोई payment पूरा नहीं हुआ।'
+);
+
+}
+
+},
+
+
+theme:{
+color:'#2563eb'
+}
+
+};
+
+
+const razorpay=new Razorpay(options);
+
+
+/* PAYMENT FAILED */
+
+razorpay.on(
+'payment.failed',
+function(response){
+
+console.error(
+'Razorpay payment failed:',
+response.error
+);
+
+payNowBtn.disabled=false;
+
+payNowBtn.textContent=
+'💳 Premium लें';
+
+showPaymentMessage(
+'❌ <b>Payment सफल नहीं हुआ।</b><br>'+
+(
+response.error?.description||
+'कृपया दोबारा प्रयास करें।'
+)
+);
+
+}
+);
+
+
+/* OPEN PAYMENT WINDOW */
+
+razorpay.open();
+
+
+}catch(error){
+
+console.error(
+'Create payment order error:',
+error
+);
+
+showPaymentMessage(
+'⚠️ <b>Payment शुरू नहीं हो सका:</b><br>'+
+(
+error.message||
+'कृपया बाद में दोबारा प्रयास करें।'
+)
+);
+
+payNowBtn.disabled=false;
+
+payNowBtn.textContent=
+'💳 Premium लें';
+
+}
+
+}
+);
+
 </script>
+
 <script src="assets/js/ui.js"></script>
+
 </body>
 </html>
