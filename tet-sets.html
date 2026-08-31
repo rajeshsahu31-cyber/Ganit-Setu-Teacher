@@ -63,6 +63,22 @@
   background:#fff8e6;font-size:14px;line-height:1.6;
 }
 
+/* Active Premium Access display */
+.premium-badge.access-active{
+  background:#e8f7ee;
+  border:1px solid #77c593;
+}
+.set-access-message{
+  display:none;
+  margin:4px 0 8px;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.4;
+}
+.set-access-message.active{
+  display:block;
+}
+
 </style>
 
 </head>
@@ -118,7 +134,9 @@
 
       <span>🅱️</span>
 
-      <h2>Set B</h2><div class="premium-badge">🔒 Premium</div>
+      <h2>Set B</h2>
+      <div id="setBBadge" class="premium-badge">🔒 Premium</div>
+      <div id="setBAccessMessage" class="set-access-message"></div>
 
       <p class="setPattern">
         पैटर्न लोड हो रहा है...
@@ -135,7 +153,9 @@
 
       <span>🅲</span>
 
-      <h2>Set C</h2><div class="premium-badge">🔒 Premium</div>
+      <h2>Set C</h2>
+      <div id="setCBadge" class="premium-badge">🔒 Premium</div>
+      <div id="setCAccessMessage" class="set-access-message"></div>
 
       <p class="setPattern">
         पैटर्न लोड हो रहा है...
@@ -334,7 +354,91 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
     alert('Premium Access Check Error: ' + (err.message || 'Unknown error'));
     return false;
   }
+
 }
+
+/* =====================================
+   SHOW PREMIUM ACCESS ON SET CARDS
+   Uses the SAME RPC that already unlocks
+   Set B / Set C when clicked.
+===================================== */
+
+function getCurrentTeacherPublicId(){
+  return String(
+    sessionStorage.getItem('ganit_setu_teacher_id') ||
+    localStorage.getItem('ganit_setu_teacher_id') ||
+    ''
+  ).trim().toUpperCase();
+}
+
+function markSetAccessActive(set, message){
+  const badge = document.getElementById('set' + set + 'Badge');
+  const messageBox = document.getElementById('set' + set + 'AccessMessage');
+
+  if(badge){
+    badge.textContent = '🔓 Access Active';
+    badge.classList.add('access-active');
+  }
+
+  if(messageBox){
+    messageBox.textContent = message;
+    messageBox.classList.add('active');
+  }
+}
+
+async function updatePremiumAccessCards(){
+
+  const currentTeacherId = getCurrentTeacherPublicId();
+
+  if(!currentTeacherId) return;
+
+  // Owner access
+  if(currentTeacherId === 'GS-T-0004'){
+    markSetAccessActive(
+      'B',
+      '👑 Owner Access Active — यह Premium Set आपके लिए उपलब्ध है।'
+    );
+
+    markSetAccessActive(
+      'C',
+      '👑 Owner Access Active — यह Premium Set आपके लिए उपलब्ध है।'
+    );
+
+    const note = document.querySelector('.premium-note');
+    if(note){
+      note.innerHTML =
+        '<b>👑 Owner Access Active:</b> आपके लिए Set A, Set B और Set C सभी उपलब्ध हैं।';
+    }
+
+    return;
+  }
+
+  // Check actual database access using the existing working RPC
+  for(const set of ['B','C']){
+    try{
+      const hasAccess = await checkPremiumAccess(
+        currentTeacherId,
+        type,
+        set
+      );
+
+      if(hasAccess === true){
+        const examName =
+          type === 'primary' ? 'Primary' : 'Secondary';
+
+        markSetAccessActive(
+          set,
+          `🎉 आपका ${examName} Set ${set} Premium Access Active है।`
+        );
+      }
+    }catch(error){
+      console.warn('Premium display check failed for Set ' + set, error);
+    }
+  }
+}
+
+// Run automatically when the Set Selection page opens
+updatePremiumAccessCards();
 
 ['A','B','C'].forEach(set => {
 
@@ -429,19 +533,6 @@ document
 
 <script src="assets/js/ui.js"></script>
 
-<script>
-(function(){
-  const ownerTeacherIds=['GS-T-0004'];
-  const currentTeacherId=sessionStorage.getItem('ganit_setu_teacher_id') ||
-                         localStorage.getItem('ganit_setu_teacher_id') || '';
-  if(ownerTeacherIds.includes(currentTeacherId)){
-    const note=document.querySelector('.premium-note');
-    if(note){
-      note.innerHTML='<b>👑 Owner Access Active:</b> आपके लिए Set A, Set B और Set C सभी Free हैं।';
-    }
-  }
-})();
-</script>
 
 </body>
 </html>
