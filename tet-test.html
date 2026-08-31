@@ -3,72 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>शिक्षक पात्रता परीक्षा टेस्ट | गणित सेतु</title>
+
 <link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+/* ================================
+   PREMIUM ACCESS STATUS
+================================ */
+
+.premium-status-box{
+  display:none;
+  margin:0 0 18px;
+  padding:16px 18px;
+  border-radius:14px;
+  border:1px solid #70b77e;
+  background:#f0fff3;
+  box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+
+.premium-status-box.active{
+  display:block;
+}
+
+.premium-status-title{
+  font-size:18px;
+  font-weight:700;
+  color:#19763a;
+  margin-bottom:6px;
+}
+
+.premium-status-text{
+  color:#333;
+  line-height:1.6;
+}
+
+.owner-status{
+  border-color:#d6a72d;
+  background:#fff9e7;
+}
+
+.owner-status .premium-status-title{
+  color:#a16b00;
+}
+
+.coupon-status{
+  border-color:#7c4dff;
+  background:#f6f2ff;
+}
+
+.coupon-status .premium-status-title{
+  color:#6335c7;
+}
+</style>
+
 </head>
+
 <body>
 
 <header class="simple-header">
+
   <a href="javascript:history.back()">← वापस</a>
-  <div class="mini-brand">शिक्षक पात्रता परीक्षा</div>
+
+  <div class="mini-brand">
+    शिक्षक पात्रता परीक्षा
+  </div>
+
 </header>
 
+
 <main class="page narrow">
+
 <section class="panel test-panel">
 
+  <!-- =========================
+       TEST META
+  ========================== -->
+
   <div class="test-meta">
+
     <span id="testType">अभ्यास टेस्ट</span>
+
     <span id="setLabel">Set A</span>
-    <span id="testInfo">⏳ प्रश्न लोड हो रहे हैं...</span>
-    <span id="timer">⏱️ 00:00</span>
+
+    <span id="testInfo">
+      ⏳ प्रश्न लोड हो रहे हैं...
+    </span>
+
+    <span id="timer">
+      ⏱️ 00:00
+    </span>
+
   </div>
 
-  <div id="secondarySelection" style="display:none">
-    <h2>माध्यमिक शिक्षक पात्रता परीक्षा</h2>
-    <p>टेस्ट शुरू करने से पहले भाषा-1 और विषय चुनें।</p>
 
-    <label for="language1"><b>भाषा-1 चुनें</b></label>
-    <select id="language1" style="width:100%;padding:12px;margin:8px 0 16px">
-      <option value="">-- भाषा-1 चुनें --</option>
-      <option value="hindi">हिंदी</option>
-      <option value="sanskrit">संस्कृत</option>
-    </select>
+  <!-- =========================
+       PREMIUM ACCESS STATUS
+  ========================== -->
 
-    <label for="subject"><b>विषय चुनें</b></label>
-    <select id="subject" style="width:100%;padding:12px;margin:8px 0 16px">
-      <option value="">-- विषय चुनें --</option>
-      <option value="mathematics">गणित</option>
-    </select>
+  <div id="premiumStatusBox" class="premium-status-box">
 
-    <button class="primary-btn" id="startSecondaryBtn" type="button">
-      टेस्ट शुरू करें →
-    </button>
-  </div>
-
-  <div id="loadingBox">⏳ Supabase से Live Questions लोड हो रहे हैं...</div>
-
-  <div id="testContent" style="display:none">
-    <h1 id="questionNumber">प्रश्न 1</h1>
-    <div class="question-box" id="questionText"></div>
-    <div class="options" id="options"></div>
-
-    <div class="test-nav">
-      <button class="outline-btn" id="prevBtn" type="button">← पिछला</button>
-      <button class="primary-btn" id="nextBtn" type="button">अगला प्रश्न →</button>
+    <div
+      id="premiumStatusTitle"
+      class="premium-status-title"
+    >
+      🔓 Premium Access Active
     </div>
 
-    <div id="progressText" style="margin-top:12px"></div>
+    <div
+      id="premiumStatusText"
+      class="premium-status-text"
+    >
+      आपको इस अभ्यास सेट का Premium Access प्राप्त है।
+    </div>
+
   </div>
+
+
+  <!-- =========================
+       SECONDARY SELECTION
+  ========================== -->
+
+  <div id="secondarySelection" style="display:none">
+
+    <h2>
+      माध्यमिक शिक्षक पात्रता परीक्षा
+    </h2>
+
+    <p>
+      टेस्ट शुरू करने से पहले भाषा-1 और विषय चुनें।
+    </p>
+
+
+    <label for="language1">
+
+      <b>भाषा-1 चुनें</b>
+
+    </label>
+
+
+    <select
+      id="language1"
+      style="width:100%;padding:12px;margin:8px 0 16px"
+    >
+
+      <option value="">
+        -- भाषा-1 चुनें --
+      </option>
+
+      <option value="hindi">
+        हिंदी
+      </option>
+
+      <option value="sanskrit">
+        संस्कृत
+      </option>
+
+    </select>
+
+
+    <label for="subject">
+
+      <b>विषय चुनें</b>
+
+    </label>
+
+
+    <select
+      id="subject"
+      style="width:100%;padding:12px;margin:8px 0 16px"
+    >
+
+      <option value="">
+        -- विषय चुनें --
+      </option>
+
+      <option value="mathematics">
+        गणित
+      </option>
+
+    </select>
+
+
+    <button
+      class="primary-btn"
+      id="startSecondaryBtn"
+      type="button"
+    >
+      टेस्ट शुरू करें →
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       LOADING
+  ========================== -->
+
+  <div id="loadingBox">
+
+    ⏳ Supabase से Live Questions लोड हो रहे हैं...
+
+  </div>
+
+
+  <!-- =========================
+       TEST CONTENT
+  ========================== -->
+
+  <div
+    id="testContent"
+    style="display:none"
+  >
+
+    <h1 id="questionNumber">
+      प्रश्न 1
+    </h1>
+
+
+    <div
+      class="question-box"
+      id="questionText"
+    ></div>
+
+
+    <div
+      class="options"
+      id="options"
+    ></div>
+
+
+    <div class="test-nav">
+
+      <button
+        class="outline-btn"
+        id="prevBtn"
+        type="button"
+      >
+        ← पिछला
+      </button>
+
+
+      <button
+        class="primary-btn"
+        id="nextBtn"
+        type="button"
+      >
+        अगला प्रश्न →
+      </button>
+
+    </div>
+
+
+    <div
+      id="progressText"
+      style="margin-top:12px"
+    ></div>
+
+  </div>
+
 
   <div id="testMessage"></div>
 
 </section>
+
 </main>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="assets/js/ui.js"></script>
+
 <script src="assets/js/supabase.js"></script>
-<script src="assets/js/tet.js?v=20260831-secondary-selection-fix"></script>
+
+<script src="assets/js/tet.js?v=20260831-premium-offer-badge"></script>
 
 </body>
 </html>
