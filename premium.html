@@ -8,17 +8,23 @@
 <link rel="stylesheet" href="assets/css/style.css">
 
 <style>
-.premium-box{text-align:center;padding:32px 20px}.premium-icon{font-size:58px;margin-bottom:12px}
+.premium-box{text-align:center;padding:32px 20px}
+.premium-icon{font-size:58px;margin-bottom:12px}
 .premium-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
 .premium-info{margin:20px auto 0;max-width:650px;text-align:left;padding:18px;border-radius:14px;background:#fff8e6;line-height:1.7}
 .premium-plan{max-width:650px;margin:22px auto 0;padding:22px;border-radius:18px;border:1px solid #e7c56b;background:#fffdf7;text-align:left}
-.plan-head{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}.plan-price{text-align:right}
-.old-price{text-decoration:line-through;opacity:.65;font-size:15px}.main-price{font-size:30px;font-weight:800;margin-top:2px}
+.plan-head{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.plan-price{text-align:right}
+.old-price{text-decoration:line-through;opacity:.65;font-size:15px}
+.main-price{font-size:30px;font-weight:800;margin-top:2px}
 .offer-box{max-width:650px;margin:16px auto 0;padding:16px;border-radius:14px;background:#f3f8ff;text-align:left}
-.offer-box label{display:block;font-weight:700;margin-bottom:8px}.coupon-row{display:flex;gap:10px;flex-wrap:wrap}
+.offer-box label{display:block;font-weight:700;margin-bottom:8px}
+.coupon-row{display:flex;gap:10px;flex-wrap:wrap}
 .coupon-row input{flex:1;min-width:190px;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:15px;text-transform:uppercase}
-.coupon-status{margin-top:10px;font-size:14px;min-height:20px}.final-price{margin-top:16px;padding-top:14px;border-top:1px dashed #bbb;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:18px;font-weight:800}
-.pay-btn{min-width:220px}.payment-note{margin-top:14px;font-size:13px;line-height:1.6;color:#666}
+.coupon-status{margin-top:10px;font-size:14px;min-height:20px}
+.final-price{margin-top:16px;padding-top:14px;border-top:1px dashed #bbb;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:18px;font-weight:800}
+.pay-btn{min-width:220px}
+.payment-note{margin-top:14px;font-size:13px;line-height:1.6;color:#666}
 </style>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -32,6 +38,7 @@
 </header>
 
 <main class="page narrow">
+
 <section class="panel premium-box">
 
 <div class="premium-icon">🔒</div>
@@ -42,12 +49,14 @@
 यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध है।
 </p>
 
+
 <div class="premium-plan">
 
 <div class="plan-head">
 
 <div>
 <h2 style="margin:0">🎓 Premium Access Plan</h2>
+
 <p id="planText" class="muted" style="margin:8px 0 0">
 Set B + Set C दोनों Premium अभ्यास सेट
 </p>
@@ -60,15 +69,20 @@ Set B + Set C दोनों Premium अभ्यास सेट
 
 </div>
 
+
 <div class="premium-info" style="margin-top:18px">
+
 <b>इस Premium Plan में शामिल:</b><br>
+
 ✅ Set B Premium Access<br>
 ✅ Set C Premium Access<br>
 ✅ संबंधित परीक्षा के दोनों Premium Sets<br>
 🔓 सफल भुगतान के बाद Premium Access सक्रिय किया जाएगा
+
 </div>
 
 </div>
+
 
 <div class="offer-box">
 
@@ -95,16 +109,25 @@ Apply
 
 <div class="coupon-status" id="couponStatus"></div>
 
+
 <div class="final-price">
+
 <span>💳 भुगतान राशि</span>
+
 <span id="finalPrice">₹499</span>
+
 </div>
+
 
 <div class="payment-note">
-ℹ️ Coupon validation और final payment amount को secure backend से verify किया जाएगा। Frontend में दिखाई गई राशि final authority नहीं है।
+
+ℹ️ Coupon validation और final payment amount को secure backend से verify किया जाएगा।
+Frontend में दिखाई गई राशि final authority नहीं है।
+
 </div>
 
 </div>
+
 
 <div class="premium-actions">
 
@@ -116,19 +139,34 @@ id="payNowBtn"
 💳 Premium लें
 </button>
 
-<a class="outline-btn" id="freeSetLink" href="#">
+
+<a
+class="outline-btn"
+id="freeSetLink"
+href="#"
+>
 🆓 Free Set A पर जाएँ
 </a>
 
-<a class="outline-btn" id="backSetLink" href="#">
+
+<a
+class="outline-btn"
+id="backSetLink"
+href="#"
+>
 ← Set Selection
 </a>
 
 </div>
 
-<div class="payment-note" id="paymentMessage"></div>
+
+<div
+class="payment-note"
+id="paymentMessage"
+></div>
 
 </section>
+
 </main>
 
 
@@ -297,6 +335,7 @@ document.getElementById('paymentMessage');
 const payNowBtn=
 document.getElementById('payNowBtn');
 
+
 function showPaymentMessage(message){
 
 paymentMessage.innerHTML=message;
@@ -387,7 +426,9 @@ throw new Error(
 }
 
 
-/* OPEN RAZORPAY */
+/* =====================================
+OPEN RAZORPAY
+===================================== */
 
 const options={
 
@@ -405,7 +446,27 @@ description:
 order_id:orderData.order_id,
 
 
-/* PAYMENT SUCCESS */
+/* =====================================
+PAYMENT METHODS
+UPI ENABLED
+===================================== */
+
+method:{
+
+upi:true,
+
+card:true,
+
+netbanking:true,
+
+wallet:true
+
+},
+
+
+/* =====================================
+PAYMENT SUCCESS
+===================================== */
 
 handler:async function(response){
 
@@ -503,7 +564,9 @@ payNowBtn.textContent=
 },
 
 
-/* PAYMENT WINDOW CLOSE */
+/* =====================================
+PAYMENT WINDOW CLOSE
+===================================== */
 
 modal:{
 
@@ -530,13 +593,21 @@ color:'#2563eb'
 };
 
 
-const razorpay=new Razorpay(options);
+/* =====================================
+CREATE RAZORPAY INSTANCE
+===================================== */
+
+const razorpay=
+new Razorpay(options);
 
 
-/* PAYMENT FAILED */
+/* =====================================
+PAYMENT FAILED
+===================================== */
 
 razorpay.on(
 'payment.failed',
+
 function(response){
 
 console.error(
@@ -558,10 +629,13 @@ response.error?.description||
 );
 
 }
+
 );
 
 
-/* OPEN PAYMENT WINDOW */
+/* =====================================
+OPEN PAYMENT WINDOW
+===================================== */
 
 razorpay.open();
 
@@ -589,9 +663,11 @@ payNowBtn.textContent=
 }
 
 }
+
 );
 
 </script>
+
 
 <script src="assets/js/ui.js"></script>
 
