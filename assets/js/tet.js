@@ -24,6 +24,96 @@ function optionLetter(i) {
   return ['A', 'B', 'C', 'D'][i];
 }
 
+
+/* =========================================
+   PREMIUM ACCESS / OFFER BADGE
+========================================= */
+
+async function showPremiumAccessStatus() {
+
+  const box = $('premiumStatusBox');
+
+  if (!box) return;
+
+  box.className = 'premium-status-box';
+  box.style.display = 'none';
+
+  // Set A सभी शिक्षकों के लिए Free है
+  if (testSet === 'A') return;
+
+  try {
+
+    const publicTeacherId =
+      sessionStorage.getItem('ganit_setu_teacher_id') ||
+      localStorage.getItem('ganit_setu_teacher_id') ||
+      '';
+
+    if (!publicTeacherId) return;
+
+    const { data: teacher, error: teacherError } =
+      await supabaseClient
+        .from('teachers')
+        .select('id, teacher_id, full_name')
+        .eq('teacher_id', publicTeacherId)
+        .maybeSingle();
+
+    if (teacherError) {
+      console.warn('Teacher lookup error:', teacherError.message);
+      return;
+    }
+
+    if (!teacher?.id) return;
+
+    const { data: accesses, error: accessError } =
+      await supabaseClient
+        .from('teacher_premium_access')
+        .select('id, exam_type, test_set, access_status, payment_status, activated_at, expires_at')
+        .eq('teacher_id', teacher.id)
+        .eq('exam_type', examType)
+        .eq('test_set', testSet)
+        .eq('access_status', 'active')
+        .order('created_at', { ascending: false });
+
+    if (accessError) {
+      console.warn('Premium badge load error:', accessError.message);
+      return;
+    }
+
+    const now = new Date();
+
+    const access = (accesses || []).find(item => {
+      if (!item.expires_at) return true;
+      return new Date(item.expires_at) >= now;
+    });
+
+    if (!access) return;
+
+    const title = $('premiumStatusTitle');
+    const text = $('premiumStatusText');
+
+    if (!title || !text) return;
+
+    const examName = examType === 'primary'
+      ? 'प्राथमिक'
+      : 'माध्यमिक';
+
+    title.textContent = '🎉 Premium Access Active';
+    text.textContent =
+      `आपको ${examName} शिक्षक पात्रता परीक्षा के Set ${testSet} का Premium Access प्राप्त है। 🔓`;
+
+    if (access.expires_at) {
+      text.textContent +=
+        ` वैधता: ${new Date(access.expires_at).toLocaleDateString('hi-IN')}`;
+    }
+
+    box.classList.add('active');
+    box.style.display = 'block';
+
+  } catch (e) {
+    console.warn('Premium Access status error:', e);
+  }
+}
+
 /* =========================================
    QUESTION DISPLAY
 ========================================= */
@@ -354,10 +444,13 @@ function setupSecondarySelection() {
   const isPrimary = examType === 'primary';
 
   if (isPrimary) {
+    showPremiumAccessStatus();
     loadQuestions();
     return;
   }
 
+
+  showPremiumAccessStatus();
 
   $('secondarySelection').style.display = 'block';
   $('loadingBox').style.display = 'none';
