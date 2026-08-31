@@ -6,37 +6,47 @@
 <title>Premium Test | गणित सेतु</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-.premium-box{text-align:center;padding:32px 20px}
-.premium-icon{font-size:58px;margin-bottom:12px}
+.premium-box{text-align:center;padding:32px 20px}.premium-icon{font-size:58px;margin-bottom:12px}
 .premium-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
 .premium-info{margin:20px auto 0;max-width:650px;text-align:left;padding:18px;border-radius:14px;background:#fff8e6;line-height:1.7}
+.premium-plan{max-width:650px;margin:22px auto 0;padding:22px;border-radius:18px;border:1px solid #e7c56b;background:#fffdf7;text-align:left}
+.plan-head{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}.plan-price{text-align:right}
+.old-price{text-decoration:line-through;opacity:.65;font-size:15px}.main-price{font-size:30px;font-weight:800;margin-top:2px}
+.offer-box{max-width:650px;margin:16px auto 0;padding:16px;border-radius:14px;background:#f3f8ff;text-align:left}
+.offer-box label{display:block;font-weight:700;margin-bottom:8px}.coupon-row{display:flex;gap:10px;flex-wrap:wrap}
+.coupon-row input{flex:1;min-width:190px;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:15px;text-transform:uppercase}
+.coupon-status{margin-top:10px;font-size:14px;min-height:20px}.final-price{margin-top:16px;padding-top:14px;border-top:1px dashed #bbb;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:18px;font-weight:800}
+.pay-btn{min-width:220px}.payment-note{margin-top:14px;font-size:13px;line-height:1.6;color:#666}
 </style>
 </head>
 <body>
-<header class="simple-header">
-  <a id="backLink" href="tet.html">← वापस</a>
-  <div class="mini-brand">🔒 Premium Test</div>
-</header>
+<header class="simple-header"><a id="backLink" href="tet.html">← वापस</a><div class="mini-brand">🔒 Premium Test</div></header>
+<main class="page narrow"><section class="panel premium-box">
+<div class="premium-icon">🔒</div>
+<h1 id="title">Premium Set</h1>
+<p class="muted" id="subtitle">यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध है।</p>
 
-<main class="page narrow">
-<section class="panel premium-box">
-  <div class="premium-icon">🔒</div>
-  <h1 id="title">Premium Set</h1>
-  <p class="muted" id="subtitle">यह अभ्यास सेट Premium Access के अंतर्गत उपलब्ध होगा।</p>
+<div class="premium-plan">
+<div class="plan-head"><div><h2 style="margin:0">🎓 Premium Access Plan</h2><p id="planText" class="muted" style="margin:8px 0 0">Set B + Set C दोनों Premium अभ्यास सेट</p></div>
+<div class="plan-price"><div class="old-price">₹499</div><div class="main-price" id="displayPrice">₹499</div></div></div>
+<div class="premium-info" style="margin-top:18px"><b>इस Premium Plan में शामिल:</b><br>✅ Set B Premium Access<br>✅ Set C Premium Access<br>✅ संबंधित परीक्षा के दोनों Premium Sets<br>🔓 सफल भुगतान के बाद Premium Access सक्रिय किया जाएगा</div>
+</div>
 
-  <div class="premium-info">
-    <b>🆓 Set A:</b> हमेशा Free<br>
-    <b>🔒 Set B और Set C:</b> Premium अभ्यास सेट<br><br>
-    अभी आपका वर्तमान Test, Result, History और Leaderboard system बिल्कुल सुरक्षित है।
-    Payment Gateway और Coupon system बाद में जोड़े जाएंगे। Premium Access मिलने पर संबंधित Set अपने-आप खुल सकेगा।
-  </div>
+<div class="offer-box">
+<label for="couponCode">🎟️ Coupon / Offer Code</label>
+<div class="coupon-row"><input type="text" id="couponCode" placeholder="Coupon Code डालें" autocomplete="off"><button type="button" class="outline-btn" id="applyCouponBtn">Apply</button></div>
+<div class="coupon-status" id="couponStatus"></div>
+<div class="final-price"><span>💳 भुगतान राशि</span><span id="finalPrice">₹499</span></div>
+<div class="payment-note">ℹ️ Coupon validation और final payment amount को secure backend से verify किया जाएगा। Frontend में दिखाई गई राशि final authority नहीं है।</div>
+</div>
 
-  <div class="premium-actions">
-    <a class="outline-btn" id="freeSetLink" href="#">🆓 Free Set A पर जाएँ</a>
-    <a class="primary-btn" id="backSetLink" href="#">← Set Selection</a>
-  </div>
-</section>
-</main>
+<div class="premium-actions">
+<button type="button" class="primary-btn pay-btn" id="payNowBtn">💳 Premium लें</button>
+<a class="outline-btn" id="freeSetLink" href="#">🆓 Free Set A पर जाएँ</a>
+<a class="outline-btn" id="backSetLink" href="#">← Set Selection</a>
+</div>
+<div class="payment-note" id="paymentMessage"></div>
+</section></main>
 
 <script>
 const p=new URLSearchParams(location.search);
@@ -44,27 +54,48 @@ const type=p.get('type')==='secondary'?'secondary':'primary';
 const set=(p.get('set')||'B').toUpperCase();
 const exam=type==='secondary'?'माध्यमिक शिक्षक पात्रता परीक्षा':'प्राथमिक शिक्षक पात्रता परीक्षा';
 
-document.getElementById('title').textContent=`${exam} • Set ${set}`;
-document.getElementById('subtitle').textContent=`Set ${set} Premium अभ्यास सेट है।`;
+document.getElementById('title').textContent=`${exam} • Premium Access`;
+document.getElementById('subtitle').textContent=`₹499 में Set B और Set C दोनों Premium अभ्यास सेट उपलब्ध होंगे।`;
+document.getElementById('planText').textContent=`${exam} के लिए Set B + Set C दोनों Premium अभ्यास सेट`;
 document.getElementById('backLink').href=`tet-sets.html?type=${type}`;
 document.getElementById('backSetLink').href=`tet-sets.html?type=${type}`;
 
 const ownerTeacherIds=['GS-T-0004'];
-const currentTeacherId=sessionStorage.getItem('ganit_setu_teacher_id') ||
-                       localStorage.getItem('ganit_setu_teacher_id') || '';
+const currentTeacherId=String(sessionStorage.getItem('ganit_setu_teacher_id')||localStorage.getItem('ganit_setu_teacher_id')||'').trim().toUpperCase();
 
 if(ownerTeacherIds.includes(currentTeacherId)){
-  location.href = type==='primary'
-    ? `tet-sets.html?type=primary`
-    : `tet-test.html?type=secondary&set=${set}`;
+ document.getElementById('paymentMessage').innerHTML='👑 <b>Owner Access Active:</b> आपके लिए Premium Sets पहले से उपलब्ध हैं।';
+ document.getElementById('payNowBtn').style.display='none';
 }
 
 const free=document.getElementById('freeSetLink');
-if(type==='primary'){
-  free.href=`tet-sets.html?type=primary`;
-}else{
-  free.href=`tet-test.html?type=secondary&set=A`;
+free.href=type==='primary'?`tet-sets.html?type=primary`:`tet-test.html?type=secondary&set=A`;
+
+const BASE_PRICE=499;
+function updatePriceUI(amount){
+ const safeAmount=Math.max(0,Number(amount)||BASE_PRICE);
+ const formatted='₹'+safeAmount.toFixed(2).replace(/\.00$/,'');
+ document.getElementById('finalPrice').textContent=formatted;
+ document.getElementById('displayPrice').textContent=formatted;
 }
+updatePriceUI(BASE_PRICE);
+
+document.getElementById('applyCouponBtn').addEventListener('click',function(){
+ const code=document.getElementById('couponCode').value.trim().toUpperCase();
+ const status=document.getElementById('couponStatus');
+ if(!code){status.textContent='⚠️ कृपया Coupon Code डालें।';updatePriceUI(BASE_PRICE);return;}
+ status.textContent='⏳ Coupon Code दर्ज हो गया है। Final validation secure payment process में होगी।';
+ updatePriceUI(BASE_PRICE);
+});
+
+document.getElementById('payNowBtn').addEventListener('click',function(){
+ if(ownerTeacherIds.includes(currentTeacherId))return;
+ if(!currentTeacherId){
+  document.getElementById('paymentMessage').innerHTML='⚠️ <b>Teacher Login नहीं मिला।</b> कृपया पहले Login करें।';
+  return;
+ }
+ document.getElementById('paymentMessage').innerHTML='🔐 <b>Payment integration का secure backend अगला चरण है।</b><br>इस version में कोई वास्तविक payment नहीं लिया जा रहा है।';
+});
 </script>
 <script src="assets/js/ui.js"></script>
 </body>
