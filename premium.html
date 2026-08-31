@@ -18,6 +18,7 @@
 .coupon-status{margin-top:10px;font-size:14px;min-height:20px}.final-price{margin-top:16px;padding-top:14px;border-top:1px dashed #bbb;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:18px;font-weight:800}
 .pay-btn{min-width:220px}.payment-note{margin-top:14px;font-size:13px;line-height:1.6;color:#666}
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 <header class="simple-header"><a id="backLink" href="tet.html">← वापस</a><div class="mini-brand">🔒 Premium Test</div></header>
@@ -88,13 +89,208 @@ document.getElementById('applyCouponBtn').addEventListener('click',function(){
  updatePriceUI(BASE_PRICE);
 });
 
-document.getElementById('payNowBtn').addEventListener('click',function(){
- if(ownerTeacherIds.includes(currentTeacherId))return;
- if(!currentTeacherId){
-  document.getElementById('paymentMessage').innerHTML='⚠️ <b>Teacher Login नहीं मिला।</b> कृपया पहले Login करें।';
-  return;
- }
- document.getElementById('paymentMessage').innerHTML='🔐 <b>Payment integration का secure backend अगला चरण है।</b><br>इस version में कोई वास्तविक payment नहीं लिया जा रहा है।';
+const SUPABASE_FUNCTION_BASE =
+  'https://cbgojvnbkosdehvwerth.supabase.co/functions/v1';
+
+const CREATE_ORDER_URL =
+  `${SUPABASE_FUNCTION_BASE}/create-razorpay-order`;
+
+const VERIFY_PAYMENT_URL =
+  `${SUPABASE_FUNCTION_BASE}/verify-razorpay-payment`;
+
+const paymentMessage =
+  document.getElementById('paymentMessage');
+
+const payNowBtn =
+  document.getElementById('payNowBtn');
+
+function showPaymentMessage(message) {
+  paymentMessage.innerHTML = message;
+}
+
+payNowBtn.addEventListener('click', async function () {
+
+  if (ownerTeacherIds.includes(currentTeacherId)) return;
+
+  if (!currentTeacherId) {
+    showPaymentMessage(
+      '⚠️ <b>Teacher Login नहीं मिला।</b> कृपया पहले Login करें।'
+    );
+    return;
+  }
+
+  try {
+
+    // Double click रोकें
+    payNowBtn.disabled = true;
+    payNowBtn.textContent = '⏳ कृपया प्रतीक्षा करें...';
+
+    showPaymentMessage(
+      '🔐 सुरक्षित Payment Order बनाया जा रहा है...'
+    );
+
+    // STEP 1: Supabase Edge Function से Razorpay Order बनाएं
+    const orderResponse = await fetch(
+      CREATE_ORDER_URL,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          teacher_id: currentTeacherId,
+          exam_type: type
+        })
+      }
+    );
+
+    const orderData = await orderResponse.json();
+
+    if (!orderResponse.ok || !orderData.success) {
+      throw new Error(
+        orderData.error ||
+        'Payment Order बनाने में समस्या हुई।'
+      );
+    }
+
+    if (!window.Razorpay) {
+      throw new Error(
+        'Razorpay Checkout load नहीं हुआ। कृपया page refresh करें।'
+      );
+    }
+
+    // STEP 2: Razorpay Checkout खोलें
+    const options = {
+      key: orderData.key_id,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: 'गणित सेतु',
+      description: `${exam} Premium Access - Set B + Set C`,
+      order_id: orderData.order_id,
+
+      handler: async function (response) {
+        try {
+          showPaymentMessage(
+            '🔐 Payment verify किया जा रहा है...'
+          );
+
+          // STEP 3: Server पर Razorpay Payment verify करें
+          const verifyResponse = await fetch(
+            VERIFY_PAYMENT_URL,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            }
+          );
+
+          const verifyData = await verifyResponse.json();
+
+          if (!verifyResponse.ok || !verifyData.success) {
+            throw new Error(
+              verifyData.error ||
+              'Payment verification failed.'
+            );
+          }
+
+          showPaymentMessage(
+            '🎉 <b>Payment सफल!</b><br>' +
+            '✅ आपका Premium Access सक्रिय कर दिया गया है।<br>' +
+            '🔓 Set B और Set C अब उपलब्ध हैं।'
+          );
+
+          payNowBtn.textContent = '✅ Premium Active';
+          payNowBtn.disabled = true;
+
+          setTimeout(function () {
+            window.location.href =
+              `tet-sets.html?type=${type}`;
+          }, 2500);
+
+        } catch (error) {
+          console.error(
+            'Payment verification error:',
+            error
+          );
+
+          showPaymentMessage(
+            '⚠️ <b>Payment हुआ, लेकिन verification में समस्या आई:</b><br>' +
+            (error.message ||
+              'कृपया support से संपर्क करें।')
+          );
+
+          payNowBtn.disabled = false;
+          payNowBtn.textContent = '💳 Premium लें';
+        }
+      },
+
+      modal: {
+        ondismiss: function () {
+          payNowBtn.disabled = false;
+          payNowBtn.textContent = '💳 Premium लें';
+
+          showPaymentMessage(
+            'ℹ️ Payment window बंद कर दी गई। कोई payment पूरा नहीं हुआ।'
+          );
+        }
+      },
+
+      theme: {
+        color: '#2563eb'
+      }
+    };
+
+    const razorpay = new Razorpay(options);
+
+    razorpay.on(
+      'payment.failed',
+      function (response) {
+
+        console.error(
+          'Razorpay payment failed:',
+          response.error
+        );
+
+        payNowBtn.disabled = false;
+        payNowBtn.textContent = '💳 Premium लें';
+
+        showPaymentMessage(
+          '❌ <b>Payment सफल नहीं हुआ।</b><br>' +
+          (
+            response.error?.description ||
+            'कृपया दोबारा प्रयास करें।'
+          )
+        );
+      }
+    );
+
+    razorpay.open();
+
+  } catch (error) {
+
+    console.error(
+      'Create payment order error:',
+      error
+    );
+
+    showPaymentMessage(
+      '⚠️ <b>Payment शुरू नहीं हो सका:</b><br>' +
+      (
+        error.message ||
+        'कृपया बाद में दोबारा प्रयास करें।'
+      )
+    );
+
+    payNowBtn.disabled = false;
+    payNowBtn.textContent = '💳 Premium लें';
+  }
+
 });
 </script>
 <script src="assets/js/ui.js"></script>
