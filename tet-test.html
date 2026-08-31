@@ -16,26 +16,15 @@
   border-radius:16px;
   text-align:center;
 }
-
-.language-choice.active{
-  display:block;
-}
-
-.language-choice h2{
-  margin-bottom:10px;
-}
-
-.language-choice p{
-  margin-bottom:18px;
-}
-
+.language-choice.active{display:block}
+.language-choice h2{margin-bottom:10px}
+.language-choice p{margin-bottom:18px}
 .language-buttons{
   display:flex;
   gap:15px;
   justify-content:center;
   flex-wrap:wrap;
 }
-
 .language-btn{
   border:none;
   padding:15px 28px;
@@ -44,191 +33,136 @@
   font-size:16px;
   font-weight:700;
 }
-
-.language-btn:hover{
-  transform:translateY(-2px);
-}
+.language-btn:hover{transform:translateY(-2px)}
 
 .premium-card{position:relative;overflow:hidden}
 .premium-badge{
-  display:inline-block;margin:8px 0;padding:6px 12px;border-radius:999px;
-  font-size:13px;font-weight:800;background:#fff3cd;border:1px solid #f0c36d;
+  display:inline-block;
+  margin:8px 0;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  background:#fff3cd;
+  border:1px solid #f0c36d;
 }
 .free-badge{
-  display:inline-block;margin:8px 0;padding:6px 12px;border-radius:999px;
-  font-size:13px;font-weight:800;background:#e8f7ee;border:1px solid #77c593;
+  display:inline-block;
+  margin:8px 0;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  background:#e8f7ee;
+  border:1px solid #77c593;
 }
 .premium-note{
-  margin-top:18px;padding:14px 16px;border-radius:12px;
-  background:#fff8e6;font-size:14px;line-height:1.6;
+  margin-top:18px;
+  padding:14px 16px;
+  border-radius:12px;
+  background:#fff8e6;
+  font-size:14px;
+  line-height:1.6;
 }
 
+/* Safe Premium Access display */
+.premium-badge.access-active{
+  background:#e8f7ee;
+  border-color:#77c593;
+  color:#176b36;
+}
+.set-access-message{
+  display:none;
+  margin:4px 0 8px;
+  font-size:13px;
+  font-weight:700;
+  color:#176b36;
+}
+.set-access-message.active{display:block}
 </style>
-
 </head>
 
 <body>
 
 <header class="simple-header">
-
   <a href="tet.html">← वापस</a>
-
-  <div class="mini-brand" id="pageTitle">
-    शिक्षक पात्रता परीक्षा
-  </div>
-
+  <div class="mini-brand" id="pageTitle">शिक्षक पात्रता परीक्षा</div>
 </header>
 
-
 <main class="page">
-
 <section class="panel">
 
   <h1 id="examTitle">अभ्यास टेस्ट</h1>
 
-  <p class="muted" id="patternInfo">
-    अपना Set चुनें।
-  </p>
-
-
-  <!-- SETS -->
+  <p class="muted" id="patternInfo">अपना Set चुनें।</p>
 
   <div class="set-grid">
 
-    <!-- SET A -->
-
     <a id="setA" class="set-card" href="#">
-
       <span>🅰️</span>
-
-      <h2>Set A</h2><div class="free-badge">🆓 Free</div>
-
-      <p class="setPattern">
-        पैटर्न लोड हो रहा है...
-      </p>
-
+      <h2>Set A</h2>
+      <div class="free-badge">🆓 Free</div>
+      <p class="setPattern">पैटर्न लोड हो रहा है...</p>
       <b>टेस्ट शुरू करें →</b>
-
     </a>
-
-
-    <!-- SET B -->
 
     <a id="setB" class="set-card premium-card" href="#">
-
       <span>🅱️</span>
-
-      <h2>Set B</h2><div class="premium-badge">🔒 Premium</div>
-
-      <p class="setPattern">
-        पैटर्न लोड हो रहा है...
-      </p>
-
+      <h2>Set B</h2>
+      <div id="setBBadge" class="premium-badge">🔒 Premium</div>
+      <div id="setBAccessMessage" class="set-access-message"></div>
+      <p class="setPattern">पैटर्न लोड हो रहा है...</p>
       <b>टेस्ट शुरू करें →</b>
-
     </a>
 
-
-    <!-- SET C -->
-
     <a id="setC" class="set-card premium-card" href="#">
-
       <span>🅲</span>
-
-      <h2>Set C</h2><div class="premium-badge">🔒 Premium</div>
-
-      <p class="setPattern">
-        पैटर्न लोड हो रहा है...
-      </p>
-
+      <h2>Set C</h2>
+      <div id="setCBadge" class="premium-badge">🔒 Premium</div>
+      <div id="setCAccessMessage" class="set-access-message"></div>
+      <p class="setPattern">पैटर्न लोड हो रहा है...</p>
       <b>टेस्ट शुरू करें →</b>
-
     </a>
 
   </div>
-
 
   <div class="premium-note">
     <b>ℹ️ Premium योजना:</b> Set A सभी शिक्षकों के लिए Free है।
-    Set B और Set C Premium अभ्यास सेट हैं। Database Premium Access system सक्रिय है। Payment और Coupon system बाद में इसी से जोड़े जाएंगे।
+    Set B और Set C Premium अभ्यास सेट हैं। Database Premium Access system सक्रिय है।
+    Payment और Coupon system बाद में इसी से जोड़े जाएंगे।
   </div>
 
-  <!-- LANGUAGE 2 SELECTION -->
-
   <div id="languageChoice" class="language-choice">
-
     <h2>भाषा-2 चुनें</h2>
-
     <p>
       प्राथमिक शिक्षक पात्रता परीक्षा में भाषा-1 हिंदी निर्धारित है।
       कृपया भाषा-2 चुनें।
     </p>
 
     <div class="language-buttons">
-
-      <button
-        type="button"
-        class="language-btn primary-btn"
-        id="englishBtn">
-
-        English
-
-      </button>
-
-
-      <button
-        type="button"
-        class="language-btn outline-btn"
-        id="sanskritBtn">
-
-        संस्कृत
-
-      </button>
-
+      <button type="button" class="language-btn primary-btn" id="englishBtn">English</button>
+      <button type="button" class="language-btn outline-btn" id="sanskritBtn">संस्कृत</button>
     </div>
-
   </div>
-
-
-  <!-- RESULT -->
 
   <div class="result-entry">
-
     <div>
-
       <span>📊</span>
-
       <div>
-
         <h2>मेरा परिणाम</h2>
-
-        <p>
-          अपने सभी दिए गए टेस्ट का तारीखवार परिणाम देखें
-        </p>
-
+        <p>अपने सभी दिए गए टेस्ट का तारीखवार परिणाम देखें</p>
       </div>
-
     </div>
 
-
-    <a
-      class="outline-inline"
-      href="teacher-results.html">
-
-      परिणाम देखें →
-
-    </a>
-
+    <a class="outline-inline" href="teacher-results.html">परिणाम देखें →</a>
   </div>
 
-
 </section>
-
 </main>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase.js"></script>
+
 <script>
 
 const p = new URLSearchParams(location.search);
@@ -238,17 +172,13 @@ const type =
     ? 'secondary'
     : 'primary';
 
-
 const hindi =
   type === 'secondary'
     ? 'माध्यमिक शिक्षक पात्रता परीक्षा'
     : 'प्राथमिक शिक्षक पात्रता परीक्षा';
 
-
 document.getElementById('pageTitle').textContent = hindi;
-
 document.getElementById('examTitle').textContent = hindi;
-
 
 /* =====================================
    EXAM PATTERN
@@ -259,26 +189,20 @@ const info =
     ? 'प्रत्येक Set में 150 प्रश्न • 150 अंक • 5 भाग • प्रत्येक भाग में 30 प्रश्न'
     : 'अपना Set चुनें। प्रत्येक Set का मौजूदा माध्यमिक शिक्षक पैटर्न यथावत रहेगा।';
 
-
 document.getElementById('patternInfo').textContent = info;
 
-
 document.querySelectorAll('.setPattern').forEach(el => {
-
   el.textContent =
     type === 'primary'
       ? '5 भाग • प्रत्येक भाग में 30 प्रश्न'
       : 'मौजूदा परीक्षा पैटर्न';
-
 });
-
 
 /* =====================================
    PRIMARY LANGUAGE SELECTION
 ===================================== */
 
 let selectedSet = null;
-
 
 async function openSelectedSet(set){
   if(type === 'primary'){
@@ -293,12 +217,20 @@ async function openSelectedSet(set){
   }
 }
 
+/* =====================================
+   ORIGINAL PREMIUM ACCESS CHECK
+   TEST OPENING LOGIC PRESERVED
+===================================== */
+
 async function checkPremiumAccess(publicTeacherId, examType, testSet){
   const teacherId = String(publicTeacherId || '').trim().toUpperCase();
   const exam = String(examType || '').trim().toLowerCase();
   const setName = String(testSet || '').trim().toUpperCase();
 
-  console.log('PREMIUM CHECK:', { teacherId, exam, setName, supabaseReady: typeof supabaseClient !== 'undefined' });
+  console.log('PREMIUM CHECK:', {
+    teacherId, exam, setName,
+    supabaseReady: typeof supabaseClient !== 'undefined'
+  });
 
   if(!teacherId){
     alert('⚠️ Teacher Login नहीं मिला। कृपया पहले Logout करके दोबारा Login करें।');
@@ -336,6 +268,10 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
   }
 }
 
+/* =====================================
+   ORIGINAL SET OPENING LOGIC
+===================================== */
+
 ['A','B','C'].forEach(set => {
 
   const card = document.getElementById('set' + set);
@@ -345,7 +281,6 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
   card.addEventListener('click', async function(e){
     e.preventDefault();
 
-    /* Owner/Admin + Supabase Premium Access */
     const ownerTeacherIds = ['GS-T-0004'];
     const currentTeacherId = String(
       sessionStorage.getItem('ganit_setu_teacher_id') ||
@@ -368,20 +303,16 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
       return;
     }
 
-    /* Set A remains free. */
+    /* Set A remains free */
     if(type === 'primary'){
       selectedSet = set;
 
-      document
-        .getElementById('languageChoice')
-        .classList.add('active');
+      document.getElementById('languageChoice').classList.add('active');
 
-      document
-        .getElementById('languageChoice')
-        .scrollIntoView({
-          behavior:'smooth',
-          block:'center'
-        });
+      document.getElementById('languageChoice').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
     }else{
       location.href = `tet-test.html?type=${type}&set=${set}`;
     }
@@ -389,60 +320,116 @@ async function checkPremiumAccess(publicTeacherId, examType, testSet){
 
 });
 
-
 /* =====================================
    ENGLISH
 ===================================== */
 
-document
-  .getElementById('englishBtn')
-  .addEventListener('click', function(){
-
-    if(!selectedSet) return;
-
-
-    location.href =
-      `tet-test.html?type=primary&set=${selectedSet}&lang=english`;
-
+document.getElementById('englishBtn').addEventListener('click', function(){
+  if(!selectedSet) return;
+  location.href =
+    `tet-test.html?type=primary&set=${selectedSet}&lang=english`;
 });
-
 
 /* =====================================
    SANSKRIT
 ===================================== */
 
-document
-  .getElementById('sanskritBtn')
-  .addEventListener('click', function(){
-
-    if(!selectedSet) return;
-
-
-    location.href =
-      `tet-test.html?type=primary&set=${selectedSet}&lang=sanskrit`;
-
+document.getElementById('sanskritBtn').addEventListener('click', function(){
+  if(!selectedSet) return;
+  location.href =
+    `tet-test.html?type=primary&set=${selectedSet}&lang=sanskrit`;
 });
 
+/* =====================================
+   SAFE BADGE DISPLAY ONLY
+   This never changes test opening.
+===================================== */
+
+function showPremiumAccessBadge(set, message){
+  const badge = document.getElementById('set' + set + 'Badge');
+  const messageBox = document.getElementById('set' + set + 'AccessMessage');
+
+  if(badge){
+    badge.textContent = '🔓 Access Active';
+    badge.classList.add('access-active');
+  }
+
+  if(messageBox){
+    messageBox.textContent = message;
+    messageBox.classList.add('active');
+  }
+}
+
+async function loadPremiumAccessBadges(){
+  try{
+    const currentTeacherId = String(
+      sessionStorage.getItem('ganit_setu_teacher_id') ||
+      localStorage.getItem('ganit_setu_teacher_id') || ''
+    ).trim().toUpperCase();
+
+    if(!currentTeacherId) return;
+
+    /* Owner display */
+    if(currentTeacherId === 'GS-T-0004'){
+      showPremiumAccessBadge(
+        'B',
+        '👑 Owner Access Active — यह Premium Set आपके लिए उपलब्ध है।'
+      );
+
+      showPremiumAccessBadge(
+        'C',
+        '👑 Owner Access Active — यह Premium Set आपके लिए उपलब्ध है।'
+      );
+
+      const note = document.querySelector('.premium-note');
+      if(note){
+        note.innerHTML =
+          '<b>👑 Owner Access Active:</b> आपके लिए Set A, Set B और Set C सभी उपलब्ध हैं।';
+      }
+      return;
+    }
+
+    /* Silent checks only for display */
+    if(typeof supabaseClient === 'undefined') return;
+
+    for(const set of ['B','C']){
+      try{
+        const { data, error } = await supabaseClient.rpc(
+          'check_teacher_premium_access',
+          {
+            p_teacher_public_id: currentTeacherId,
+            p_exam_type: type,
+            p_test_set: set
+          }
+        );
+
+        if(!error && data === true){
+          const examName =
+            type === 'primary' ? 'Primary' : 'Secondary';
+
+          showPremiumAccessBadge(
+            set,
+            '🎉 आपका ' + examName +
+            ' Set ' + set +
+            ' Premium Access Active है।'
+          );
+        }
+      }catch(err){
+        console.warn('Badge check skipped for Set ' + set, err);
+      }
+    }
+
+  }catch(err){
+    console.warn('Premium badge display error:', err);
+  }
+}
+
+/* Display badges after page logic is ready */
+loadPremiumAccessBadges();
 
 </script>
-
 
 <script src="assets/js/ui.js"></script>
 
-<script>
-(function(){
-  const ownerTeacherIds=['GS-T-0004'];
-  const currentTeacherId=sessionStorage.getItem('ganit_setu_teacher_id') ||
-                         localStorage.getItem('ganit_setu_teacher_id') || '';
-  if(ownerTeacherIds.includes(currentTeacherId)){
-    const note=document.querySelector('.premium-note');
-    if(note){
-      note.innerHTML='<b>👑 Owner Access Active:</b> आपके लिए Set A, Set B और Set C सभी Free हैं।';
-    }
-  }
-})();
-</script>
-
 </body>
 </html>
- 
