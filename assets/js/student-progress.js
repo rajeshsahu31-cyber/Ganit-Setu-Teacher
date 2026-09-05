@@ -173,8 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       .eq('student_id', student.id)
 
-      .eq('status', 'submitted')
-
       .order(
         'submitted_at',
         {
@@ -187,7 +185,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     const submittedAttempts =
-      attempts || [];
+      (attempts || []).filter(attempt =>
+        String(attempt.status || '').toLowerCase() === 'submitted' ||
+        !!attempt.submitted_at
+      );
 
 
 
@@ -511,5 +512,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   }
 
+
+
+  // Live refresh for this student's progress.
+  setInterval(() => {
+    if (document.visibilityState === 'visible') location.reload();
+  }, 30000);
 
 });
