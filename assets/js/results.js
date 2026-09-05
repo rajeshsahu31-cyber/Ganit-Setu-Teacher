@@ -51,14 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       .select(`id, student_id, test_id, score, total_marks, percentage, time_taken_seconds, submitted_at, status,
         tests (id, title, class_level, test_type, test_date)`)
       .in('student_id', studentIds)
-      .eq('status', 'submitted')
       .order('submitted_at', { ascending: false });
 
     if (attemptsError) throw attemptsError;
 
     const valid = (attempts || []).filter(a => {
       const student = studentMap[a.student_id];
-      return student && a.tests && Number(a.tests.class_level) === Number(student.class_level);
+      const completed = String(a.status || '').toLowerCase() === 'submitted' || !!a.submitted_at;
+      return completed && student && a.tests && Number(a.tests.class_level) === Number(student.class_level);
     });
 
     const percentages = valid.map(a => Number(a.percentage || 0));
@@ -105,4 +105,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('School Results Load Error:', error);
     resultList.innerHTML = `<div class="empty-results"><span>❌</span><h2>परिणाम लोड नहीं हो सके</h2><p>${escapeHtml(error.message || 'Unknown error')}</p></div>`;
   }
+
+  // Live refresh after student submissions.
+  setInterval(() => {
+    if (document.visibilityState === 'visible') location.reload();
+  }, 30000);
+
 });
