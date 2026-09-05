@@ -409,5 +409,10 @@ async function loadStudents() {
 
 document.addEventListener(
   'DOMContentLoaded',
-  loadStudents
+  () => {
+    loadStudents();
+    setInterval(() => {
+      if (document.visibilityState === 'visible') loadStudents();
+    }, 30000);
+  }
 );
