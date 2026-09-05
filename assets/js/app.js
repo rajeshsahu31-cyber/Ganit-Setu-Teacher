@@ -180,17 +180,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         studentIds
       )
 
-      .eq(
-        'status',
-        'submitted'
-      );
+      ;
 
 
     if (attemptsError) throw attemptsError;
 
 
     const submittedAttempts =
-      attempts || [];
+      (attempts || []).filter(attempt =>
+        String(attempt.status || '').toLowerCase() === 'submitted' ||
+        !!attempt.submitted_at
+      );
 
 
     /* =====================================
@@ -394,5 +394,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   }
 
+
+
+  // Live refresh so newly submitted student tests appear automatically.
+  setInterval(() => {
+    if (document.visibilityState === 'visible') location.reload();
+  }, 30000);
 
 });
